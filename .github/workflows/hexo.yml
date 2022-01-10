@@ -30,16 +30,17 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
 
-      # Deploy hexo blog website.
-      - name: Deploy
-        id: deploy
-        uses: sma11black/hexo-action@v1.0.3
-        with:
-          deploy_key: ${{ secrets.DEPLOY_KEY }}
-          user_name: feifeifeimoon  # (or delete this input setting to use bot account)
-          user_email: wangyufeimoon@gmail.com  # (or delete this input setting to use bot account)
-          commit_msg: ${{ github.event.head_commit.message }}  # (or delete this input setting to use hexo default settings)
-      # Use the output from the `deploy` step(use for test action)
-      - name: Get the output
+      - name: Configuration environment
+        env:
+          DEPLOY_KEY: ${{secrets.DEPLOY_KEY}}
         run: |
-          echo "${{ steps.deploy.outputs.notify }}"
+          mkdir -p ~/.ssh/
+          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name "feifeifeimoon"
+          git config --global user.email "wangyufeimoon@gmail.com"
+
+      - name: Deploy hexo
+        run: |
+          hexo deploy
