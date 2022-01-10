@@ -17,18 +17,10 @@ jobs:
         with:
           submodules: true # Checkout private submodules(themes or something else).
 
-      # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
-      - name: Cache node modules
-        uses: actions/cache@v1
-        id: cache
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+          node-version: ${{ matrix.node-version }}
 
       - name: Configuration environment
         env:
@@ -40,6 +32,11 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name "feifeifeimoon"
           git config --global user.email "wangyufeimoon@gmail.com"
+
+      - name: Install dependencies
+        run: |
+          npm i -g hexo-cli
+          npm i
 
       - name: Deploy hexo
         run: |
