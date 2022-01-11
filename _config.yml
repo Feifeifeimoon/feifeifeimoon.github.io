@@ -5,7 +5,7 @@
 # Site
 title: 飞飞飞
 subtitle: ''
-description: ''
+description: '像风走了八百里'
 keywords: blog
 author: Yufei Wang
 language: zh-CN
@@ -41,7 +41,10 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
+marked:
+  prependRoot: true
+  postAsset: true
 relative_link: false
 future: true
 highlight:
