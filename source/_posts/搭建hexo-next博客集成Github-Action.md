@@ -233,13 +233,18 @@ $ ssh-keygen -f deploy-key
 ```
 
 
-会生成 `deploy-key` 和 `deploy-key.pub` 两个文件，分别是公钥和私钥。
+会生成`deploy-key`和`deploy-key.pub`两个文件，分别是私钥和公钥。接着需要将公钥`deploy-key.pub`作为`Deploy keys`添加到`username.github.io`项目中。
 
-接着讲公钥`deploy-key.pub`作为`Depoly key`添加到`username.github.io`项目中
+`Deploy keys`就和我们往`GitHub`中添加`ssh`公钥一样，只不过这个`Deploy keys`是针对某个仓库的。
+
 
 ![](image_7.png)
 
-接着讲私钥作为`Secrets`同样添加到项目中
+有了公钥我们还需要私钥才能推送到仓库中。接着将私钥以`Secrets`的方式添加到项目中
+
+{% note info %}
+注意这里我们添加的名称为`DEPOLY_KEY`
+{% endnote %}
 
 ![](image_8.png)
 
