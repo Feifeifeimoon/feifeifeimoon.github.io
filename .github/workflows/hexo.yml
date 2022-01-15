@@ -40,4 +40,5 @@ jobs:
 
       - name: Deploy hexo
         run: |
+          cp special/layout/_layout.swig themes/next/layout/
           hexo deploy
