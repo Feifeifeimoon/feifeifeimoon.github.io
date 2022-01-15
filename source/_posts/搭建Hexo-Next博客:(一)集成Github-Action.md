@@ -1,11 +1,11 @@
 ---
-title: 搭建hexo+next博客集成Github Action
+title: 搭建Hexo+Next博客:(一)集成Github-Action
 date: 2022-01-12 00:11:16
 update: 2022-01-15 20:54:12
 tags: hexo
 ---
 
-# 搭建Hexo+Next博客集成Github Action
+# 搭建Hexo+Next博客:(一)集成Github-Action
 
 这次重新折腾博客，主要有几个目标
 
