@@ -39,6 +39,11 @@ jobs:
           npm i
 
       - name: Deploy hexo
+      - env:
+          CLIENT_ID: ${{secrets.CLIENT_ID}}
+          CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
         run: |
+          sed -i "s/gitalk_client_id/${CLIENT_ID}/" _config.next.yml
+          sed -i "s/gitalk_client_secret/${CLIENT_SECRET}/" _config.next.yml
           cp special/layout/_layout.swig themes/next/layout/
           hexo deploy
