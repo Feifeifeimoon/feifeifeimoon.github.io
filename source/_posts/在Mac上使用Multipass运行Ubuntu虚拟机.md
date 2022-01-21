@@ -1,10 +1,10 @@
 ---
 title: 在Mac上使用Multipass运行Ubuntu虚拟机
+abbrlink: 5ba8a50c
 date: 2022-01-16 15:47:37
 update: 2022-01-16 15:47:37
-tags: 
+tags:
 ---
-# 在Mac上使用Multipass运行Ubuntu虚拟机
 
 [**Multipass**](https://multipass.run/) 是一个轻量虚拟机管理器，是由 **Ubuntu** 运营公司 **Canonical** 所推出的[开源项目](https://github.com/canonical/multipass)。目前支持 **Linux**、**Windows**、**macOS**。**Multipass** 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 **Ubuntu** 虚拟机
 
