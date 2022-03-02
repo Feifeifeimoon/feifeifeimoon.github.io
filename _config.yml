@@ -27,6 +27,9 @@ pretty_urls:
 
 sitemap:
   path: sitemap.xml
+  tag: false
+  category: false
+
 
 # Directory
 source_dir: source
