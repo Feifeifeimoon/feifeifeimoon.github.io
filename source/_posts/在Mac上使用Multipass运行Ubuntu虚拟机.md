@@ -2,7 +2,7 @@
 title: 在Mac上使用Multipass运行Ubuntu虚拟机
 abbrlink: 5ba8a50c
 date: 2022-01-16 15:47:37
-update: 2022-01-16 15:47:37
+updated: 2022-03-16 20:16:37
 tags:
 ---
 
