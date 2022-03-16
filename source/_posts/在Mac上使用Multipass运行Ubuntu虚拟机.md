@@ -22,7 +22,11 @@ tags:
 没有安装 `Homebrew`? [点击这里安装 Homebrew](https://link.segmentfault.com/?enc=1L8at0RPojKOLDBF33vHSw==.qRVlnGJxmxiBPCV618xdCQ==)
 
 ```Bash
+# 安装
 $ brew install multipass
+
+# 如果想要更新multipass版本
+$ brew upgrade multipass
 ```
 
 
