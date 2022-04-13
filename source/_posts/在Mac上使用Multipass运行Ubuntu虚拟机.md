@@ -4,6 +4,7 @@ abbrlink: 5ba8a50c
 date: 2022-01-16 15:47:37
 updated: 2022-03-16 20:16:37
 tags:
+- tools
 ---
 
 [**Multipass**](https://multipass.run/) 是一个轻量虚拟机管理器，是由 **Ubuntu** 运营公司 **Canonical** 所推出的[开源项目](https://github.com/canonical/multipass)。目前支持 **Linux**、**Windows**、**macOS**。**Multipass** 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 **Ubuntu** 虚拟机

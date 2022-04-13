@@ -1,9 +1,12 @@
 ---
-title: (译) 教程：泛型入门 (Go 官方教程)
+title: '[译] 教程：泛型入门 (Go 官方教程)'
 abbrlink: e82052d2
 date: 2022-04-12 22:15:16
-updated: 2022-04-12 22:15:16
+updated: 2022-04-13 22:42:16
 tags:
+- Golang
+- 泛型
+- translate
 ---
 ## 译者序
 
