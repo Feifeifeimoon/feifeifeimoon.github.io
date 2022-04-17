@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>飞飞飞</title>
+  <icon>https://feifeifeimoon.github.io/icon.png</icon>
+  
+  <link href="https://feifeifeimoon.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://feifeifeimoon.github.io/"/>
+  <updated>2022-04-13T14:42:16.000Z</updated>
+  <id>https://feifeifeimoon.github.io/</id>
+  
+  <author>
+    <name>Yufei Wang</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>[译] 教程：泛型入门 (Go 官方教程)</title>
+    <link href="https://feifeifeimoon.github.io/posts/e82052d2.html"/>
+    <id>https://feifeifeimoon.github.io/posts/e82052d2.html</id>
+    <published>2022-04-12T14:15:16.000Z</published>
+    <updated>2022-04-13T14:42:16.000Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;译者序&quot;&gt;&lt;a href=&quot;#译者序&quot; class=&quot;headerlink&quot; title=&quot;译者序&quot;&gt;&lt;/a&gt;译者序&lt;/h2&gt;&lt;p&gt;本文翻译自 &lt;strong&gt;Golang&lt;/strong&gt; 官方教程 &lt;a href=&quot;https://go.dev/doc/tutorial/generics&quot;&gt;&lt;strong&gt;Tutorial: Getting started with generics&lt;/strong&gt;&lt;/a&gt;。主要是关于 &lt;strong&gt;Golang&lt;/strong&gt; 泛型的简单教程。&lt;br&gt;&lt;strong&gt;由于译者水平有限，本文不免存在遗漏或错误之处。如有疑问，请查阅原文。&lt;/strong&gt;&lt;br&gt;以下是译文。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="Golang" scheme="https://feifeifeimoon.github.io/tags/Golang/"/>
+    
+    <category term="泛型" scheme="https://feifeifeimoon.github.io/tags/%E6%B3%9B%E5%9E%8B/"/>
+    
+    <category term="translate" scheme="https://feifeifeimoon.github.io/tags/translate/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在Mac上使用Multipass运行Ubuntu虚拟机</title>
+    <link href="https://feifeifeimoon.github.io/posts/5ba8a50c.html"/>
+    <id>https://feifeifeimoon.github.io/posts/5ba8a50c.html</id>
+    <published>2022-01-16T07:47:37.000Z</published>
+    <updated>2022-03-16T12:16:37.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://multipass.run/&quot;&gt;&lt;strong&gt;Multipass&lt;/strong&gt;&lt;/a&gt; 是一个轻量虚拟机管理器，是由 &lt;strong&gt;Ubuntu&lt;/strong&gt; 运营公司 &lt;strong&gt;Canonical&lt;/strong&gt; 所推出的&lt;a href=&quot;https://github.com/canonical/multipass&quot;&gt;开源项目&lt;/a&gt;。目前支持 &lt;strong&gt;Linux&lt;/strong&gt;、&lt;strong&gt;Windows&lt;/strong&gt;、&lt;strong&gt;macOS&lt;/strong&gt;。&lt;strong&gt;Multipass&lt;/strong&gt; 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 &lt;strong&gt;Ubuntu&lt;/strong&gt; 虚拟机&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="tools" scheme="https://feifeifeimoon.github.io/tags/tools/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>搭建Hexo+Next博客:(二)个性化配置</title>
+    <link href="https://feifeifeimoon.github.io/posts/6e3623f6.html"/>
+    <id>https://feifeifeimoon.github.io/posts/6e3623f6.html</id>
+    <published>2022-01-15T14:20:26.000Z</published>
+    <updated>2022-01-15T14:20:26.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;在之前的文章我们使用 &lt;code&gt;Hexo + Next&lt;/code&gt; 创建了一个博客，并且使用 &lt;code&gt;Github Action&lt;/code&gt; 实现了自动部署功能。但默认的 &lt;code&gt;Next&lt;/code&gt; 主题还是有些简单，接着我们来给博客添加一些个性化配置。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="hexo" scheme="https://feifeifeimoon.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>搭建Hexo+Next博客:(一)集成Github-Action</title>
+    <link href="https://feifeifeimoon.github.io/posts/51a7104d.html"/>
+    <id>https://feifeifeimoon.github.io/posts/51a7104d.html</id>
+    <published>2022-01-11T16:11:16.000Z</published>
+    <updated>2022-01-15T12:54:12.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;这次重新折腾博客，主要有几个目标&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;添加多样性插件。比如支持评论&lt;/li&gt;
+&lt;li&gt;容易部署，如果切换电脑同步方便&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终选定了基于 &lt;code&gt;Hexo➕Next&lt;/code&gt; 主题，托管在 &lt;code&gt;Github&lt;/code&gt; 上，并且使用 &lt;code&gt;Github Action&lt;/code&gt; 实现推送文章后自动部署。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="hexo" scheme="https://feifeifeimoon.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+</feed>

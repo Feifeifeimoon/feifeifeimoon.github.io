@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>在Mac上使用Multipass运行Ubuntu虚拟机</title>
+    <url>/posts/5ba8a50c.html</url>
+    <content><![CDATA[<p><a href="https://multipass.run/"><strong>Multipass</strong></a> 是一个轻量虚拟机管理器，是由 <strong>Ubuntu</strong> 运营公司 <strong>Canonical</strong> 所推出的<a href="https://github.com/canonical/multipass">开源项目</a>。目前支持 <strong>Linux</strong>、<strong>Windows</strong>、<strong>macOS</strong>。<strong>Multipass</strong> 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 <strong>Ubuntu</strong> 虚拟机</p>
+<span id="more"></span>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><p>在 <a href="https://multipass.run/"><strong>Multipass</strong></a>官网下载安装包</p>
+<p><img data-src="/posts/5ba8a50c/image.png"></p>
+<h3 id="Homebrew-安装"><a href="#Homebrew-安装" class="headerlink" title="Homebrew 安装"></a>Homebrew 安装</h3><p>没有安装 <code>Homebrew</code>? <a href="https://link.segmentfault.com/?enc=1L8at0RPojKOLDBF33vHSw==.qRVlnGJxmxiBPCV618xdCQ==">点击这里安装 Homebrew</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ brew install multipass</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想要更新multipass版本</span></span><br><span class="line">$ brew upgrade multipass</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Use"><a href="#Use" class="headerlink" title="Use"></a>Use</h2><p>首先先看一下 <strong>multipass</strong> 有哪些命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass  -h</span><br><span class="line">Usage: multipass [options] &lt;<span class="built_in">command</span>&gt;</span><br><span class="line">Create, control and connect to Ubuntu instances.</span><br><span class="line"></span><br><span class="line">This is a <span class="built_in">command</span> line utility <span class="keyword">for</span> multipass, a</span><br><span class="line">service that manages Ubuntu instances.</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -h, --<span class="built_in">help</span>     Displays <span class="built_in">help</span> on commandline options.</span><br><span class="line">  --help-all     Displays <span class="built_in">help</span> including Qt specific options.</span><br><span class="line">  -v, --verbose  Increase logging verbosity. Repeat the <span class="string">&#x27;v&#x27;</span> <span class="keyword">in</span> the short option</span><br><span class="line">                 <span class="keyword">for</span> more detail. Maximum verbosity is obtained with 4 (or more)</span><br><span class="line">                 v<span class="string">&#x27;s, i.e. -vvvv.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Available commands:</span></span><br><span class="line"><span class="string">  alias     Create an alias</span></span><br><span class="line"><span class="string">  aliases   List available aliases</span></span><br><span class="line"><span class="string">  delete    Delete instances</span></span><br><span class="line"><span class="string">  exec      Run a command on an instance</span></span><br><span class="line"><span class="string">  find      Display available images to create instances from</span></span><br><span class="line"><span class="string">  get       Get a configuration setting</span></span><br><span class="line"><span class="string">  help      Display help about a command</span></span><br><span class="line"><span class="string">  info      Display information about instances</span></span><br><span class="line"><span class="string">  launch    Create and start an Ubuntu instance</span></span><br><span class="line"><span class="string">  list      List all available instances</span></span><br><span class="line"><span class="string">  mount     Mount a local directory in the instance</span></span><br><span class="line"><span class="string">  networks  List available network interfaces</span></span><br><span class="line"><span class="string">  purge     Purge all deleted instances permanently</span></span><br><span class="line"><span class="string">  recover   Recover deleted instances</span></span><br><span class="line"><span class="string">  restart   Restart instances</span></span><br><span class="line"><span class="string">  set       Set a configuration setting</span></span><br><span class="line"><span class="string">  shell     Open a shell on a running instance</span></span><br><span class="line"><span class="string">  start     Start instances</span></span><br><span class="line"><span class="string">  stop      Stop running instances</span></span><br><span class="line"><span class="string">  suspend   Suspend running instances</span></span><br><span class="line"><span class="string">  transfer  Transfer files between the host and instances</span></span><br><span class="line"><span class="string">  umount    Unmount a directory from an instance</span></span><br><span class="line"><span class="string">  unalias   Remove an alias</span></span><br><span class="line"><span class="string">  version   Show version details</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Launch"><a href="#Launch" class="headerlink" title="Launch"></a>Launch</h2><p>我们使用 <strong>multipass</strong> 来创建一个 <strong>Ubuntu</strong> 虚拟机。<strong>multipass</strong> 中也有镜像的概念，通过 <code>multipass find</code> 命令可以查看当前有哪些镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass find</span><br><span class="line">Image                       Aliases           Version          Description</span><br><span class="line">18.04                       bionic            20220104         Ubuntu 18.04 LTS</span><br><span class="line">20.04                       focal,lts         20220111         Ubuntu 20.04 LTS</span><br><span class="line">21.04                       hirsute           20220113         Ubuntu 21.04</span><br><span class="line">21.10                       impish            20220111         Ubuntu 21.10</span><br><span class="line">anbox-cloud-appliance                         latest           Anbox Cloud Appliance</span><br><span class="line">minikube                                      latest           minikube is <span class="built_in">local</span> Kubernetes</span><br></pre></td></tr></table></figure>
+
+
+<p>使用 <code>multipass launch</code> 命令创建一个 <strong>Ubuntu20.04</strong> 的虚拟机</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -n 虚拟机名称 -c CPU -m 内存 -d 磁盘大小  20.04 指定镜像</span></span><br><span class="line">$ multipass launch -n ubuntu -c 2 -m 4G -d 10G 20.04</span><br><span class="line">Launched: ubuntu</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="note info">
+            <p><code>launch</code> 时更多参数可以通过 <code>multipass launch -h</code> 查看</p>
+          </div>
+
+
+
+<h2 id="List-amp-amp-Info"><a href="#List-amp-amp-Info" class="headerlink" title="List &amp;&amp; Info"></a>List &amp;&amp; Info</h2><p>查看运行中的虚拟机列表</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass list</span><br><span class="line">Name                    State             IPv4             Image</span><br><span class="line">ubuntu                  Running           192.168.64.4     Ubuntu 20.04 LTS</span><br></pre></td></tr></table></figure>
+
+
+<p>还可以通过 <code>multipass info</code> 查看虚拟机详细信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass info ubuntu            </span><br><span class="line">Name:           ubuntu</span><br><span class="line">State:          Running</span><br><span class="line">IPv4:           192.168.64.4</span><br><span class="line">Release:        Ubuntu 20.04.3 LTS</span><br><span class="line">Image <span class="built_in">hash</span>:     e9cae16ff305 (Ubuntu 20.04 LTS)</span><br><span class="line">Load:           0.00 0.00 0.00</span><br><span class="line">Disk usage:     1.2G out of 4.7G</span><br><span class="line">Memory usage:   161.6M out of 3.8G</span><br><span class="line">Mounts:         --</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Exec-amp-amp-Shell"><a href="#Exec-amp-amp-Shell" class="headerlink" title="Exec &amp;&amp; Shell"></a>Exec &amp;&amp; Shell</h2><p>进入虚拟机执行命令，有两种方式可以进入虚拟机执行命令。</p>
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass <span class="built_in">exec</span> ubuntu uname      </span><br><span class="line">Linux</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果要传递参数就需要用以下这种格式</span></span><br><span class="line">$ multipass <span class="built_in">exec</span> ubuntu -- uname -a</span><br><span class="line">Linux ubuntu 5.4.0-94-generic <span class="comment">#106-Ubuntu SMP Thu Jan 6 23:59:31 UTC 2022 aarch64 aarch64 aarch64 GNU/Linux</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><p>使用 <code>exec</code> 时每次都要添加 <code>multipass exec ubuntu</code> ，<code>multipass</code> 还支持直接进入虚拟机的 <code>shell</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$multipass</span> shell ubuntu     </span><br><span class="line">Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-94-generic aarch64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line"></span><br><span class="line">  System information as of Sun Jan 16 15:04:58 CST 2022</span><br><span class="line"></span><br><span class="line">  System load:             0.0</span><br><span class="line">  Usage of /:              26.6% of 4.68GB</span><br><span class="line">  Memory usage:            5%</span><br><span class="line">  Swap usage:              0%</span><br><span class="line">  Processes:               119</span><br><span class="line">  Users logged <span class="keyword">in</span>:         0</span><br><span class="line">  IPv4 address <span class="keyword">for</span> enp0s1: 192.168.64.4</span><br><span class="line">  IPv6 address <span class="keyword">for</span> enp0s1: fddf:1872:81b9:5408:5054:ff:fea7:7dc4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">0 updates can be applied immediately.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Last login: Sun Jan 16 15:03:53 2022 from 192.168.64.1</span><br><span class="line">To run a <span class="built_in">command</span> as administrator (user <span class="string">&quot;root&quot;</span>), use <span class="string">&quot;sudo &lt;command&gt;&quot;</span>.</span><br><span class="line">See <span class="string">&quot;man sudo_root&quot;</span> <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">ubuntu@ubuntu:~$ uname </span><br><span class="line">Linux</span><br><span class="line">ubuntu@ubuntu:~$</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="mount-amp-amp-transfer"><a href="#mount-amp-amp-transfer" class="headerlink" title="mount &amp;&amp; transfer"></a>mount &amp;&amp; transfer</h2><p><strong>multipass</strong> 也提供了宿主机和虚拟机之间同步文件</p>
+<h3 id="mount"><a href="#mount" class="headerlink" title="mount"></a>mount</h3><p>顾名思义，<strong>mount</strong> 可以将宿主机和虚拟机中的目录或者文件进行挂载。<strong>mount</strong> 后无论在宿主机还是虚拟机内进行操作，两边看到的都是一样的。熟悉 <strong>docker</strong> 的会知道这和 <code>docker -v</code> 参数一样。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass mount /var/ubuntu/<span class="built_in">test</span>  ubuntu:/<span class="built_in">test</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="transfer"><a href="#transfer" class="headerlink" title="transfer"></a>transfer</h3><p><strong>multipass</strong> 还提供了 <strong>transfer</strong> 命令，用来在宿主机和虚拟机直接传输文件，但使用 <strong>transfer</strong> 命令拷贝的文件，在拷贝完成后就不会同步，相当于宿主机和虚拟机对应两份文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt; test.txt</span><br><span class="line">$ multipass transfer ./test.txt ubuntu:/home/ubuntu/test.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h2><p>如果要删除一个虚拟机也很方便</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ multipass stop ubuntu</span><br><span class="line">$ multipass delete vm01</span><br><span class="line">$ multipass purge</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="cloud-init"><a href="#cloud-init" class="headerlink" title="cloud-init"></a>cloud-init</h2><p>在  <a href="https://multipass.run/docs">multipass官方文档</a>中说到</p>
+<p><img data-src="/posts/5ba8a50c/image_1.png"></p>
+<p>意思是可以在创建虚拟机时通过 <code>—cloud-int</code> 指定 <code>cloud-init.yml</code> 文件。</p>
+<p>有什么用呢？比方说我们每个虚拟机都要配置 <code>ssh</code> 或者需要通过 <code>apt</code> 安装一些工具，就可以将这些操作都写到 <code>cloud-init.yml</code> 文件中，这样每次创建虚拟机时就会自动执行这些环境的配置。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># run commands</span></span><br><span class="line"><span class="comment"># default: none</span></span><br><span class="line"><span class="comment"># runcmd contains a list of either lists or a string</span></span><br><span class="line"><span class="comment"># each item will be executed in order at rc.local like level with</span></span><br><span class="line"><span class="comment"># output to the console</span></span><br><span class="line"><span class="comment"># - runcmd only runs during the first boot</span></span><br><span class="line"><span class="comment"># - if the item is a list, the items will be properly executed as if</span></span><br><span class="line"><span class="comment">#   passed to execve(3) (with the first arg as the command).</span></span><br><span class="line"><span class="comment"># - if the item is a string, it will be simply written to the file and</span></span><br><span class="line"><span class="comment">#   will be interpreted by &#x27;sh&#x27;</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Note, that the list has to be proper yaml, so you have to quote</span></span><br><span class="line"><span class="comment"># any characters yaml would eat (&#x27;:&#x27; can be problematic)</span></span><br><span class="line">runcmd:</span><br><span class="line"> - [ ls, -l, / ]</span><br><span class="line"> - [ sh, -xc, <span class="string">&quot;echo <span class="subst">$(date)</span> &#x27;: hello world!&#x27;&quot;</span> ]</span><br><span class="line"> - [ sh, -c, <span class="built_in">echo</span> <span class="string">&quot;=========hello world&#x27;=========&quot;</span> ]</span><br><span class="line"> - ls -l /root</span><br><span class="line"> <span class="comment"># Note: Don&#x27;t write files to /tmp from cloud-init use /run/somedir instead.</span></span><br><span class="line"> <span class="comment"># Early boot environments can race systemd-tmpfiles-clean LP: #1707222.</span></span><br><span class="line"> - mkdir /run/mydir</span><br><span class="line"> - [ wget, <span class="string">&quot;http://slashdot.org&quot;</span>, -O, /run/mydir/index.html ]</span><br></pre></td></tr></table></figure>
+
+
+<p>更多关于<a href="https://cloudinit.readthedocs.io/en/latest/">cloud-init.yml 文件的写法</a></p>
+]]></content>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建Hexo+Next博客:(一)集成Github-Action</title>
+    <url>/posts/51a7104d.html</url>
+    <content><![CDATA[<p>这次重新折腾博客，主要有几个目标</p>
+<ul>
+<li>添加多样性插件。比如支持评论</li>
+<li>容易部署，如果切换电脑同步方便</li>
+</ul>
+<p>最终选定了基于 <code>Hexo➕Next</code> 主题，托管在 <code>Github</code> 上，并且使用 <code>Github Action</code> 实现推送文章后自动部署。</p>
+<span id="more"></span>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>创建一个 <code>hexo</code> 分支，用来存放 <code>hexo</code> 相关代码。也有些文章推荐创建一个 <code>private</code> 的仓库来存放 <code>hexo</code> 相关代码，也能通过 <code>Action</code> 实现自动部署到 <code>username.github.io</code> 仓库里。这里为了不创建多个仓库，使用一个仓库的两个不同分支来管理。</p>
+<p>基本流程如下，我们将文章或者博客的配置信息推送到 <code>Hexo</code> 分支然后触发 <code>Github Action</code> ，将 <code>Hexo</code> 分支生成的静态网页部署到 <code>Master</code> 分支，然后通过 <code>username.github.io </code> 访问。</p>
+<p><img data-src="/posts/51a7104d/image.png"></p>
+<h2 id="Environment"><a href="#Environment" class="headerlink" title="Environment"></a>Environment</h2><p>首先要进行环境配置，主要是 <code>node</code> 环境以及 <code>git</code> 配置。这里以 <code>mac</code> 环境为例其它环境类似只是安装工具不同。</p>
+<h3 id="nodejs"><a href="#nodejs" class="headerlink" title="nodejs"></a>nodejs</h3><p><code>Hexo</code> 基于 <a href="https://nodejs.org/en/download/">Node.js</a>，要先安装 <code>node.js</code> 和 <code>npm</code>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用homebrew安装</span></span><br><span class="line">$ brew update</span><br><span class="line">$ brew install node</span><br><span class="line"><span class="comment"># 查看nodejs和npm版本</span></span><br><span class="line">$ node -v</span><br><span class="line">v17.3.0</span><br><span class="line">$ npm -v</span><br><span class="line">8.3.0</span><br></pre></td></tr></table></figure>
+
+<div class="note info">
+            <p>注意 <code>node</code> 版本需要在 12 以上，否则使用 <code>hexo</code> 时会报错，可以用以下方法升级 <code>node</code> 版本。</p>
+          </div>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install -g n</span><br><span class="line">$ n stable <span class="comment"># latest #(升级node.js到最新版) stable #（升级node.js到最新稳定版）</span></span><br><span class="line">  installing : node-v16.13.2</span><br><span class="line">       mkdir : /usr/<span class="built_in">local</span>/n/versions/node/16.13.2</span><br><span class="line">       fetch : https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-x64.tar.xz</span><br><span class="line">   installed : v16.13.2 (with npm 8.1.2)</span><br><span class="line"></span><br><span class="line">Note: the node <span class="built_in">command</span> changed location and the old location may be remembered <span class="keyword">in</span> your current shell.</span><br><span class="line">         old : /usr/bin/node</span><br><span class="line">         new : /usr/<span class="built_in">local</span>/bin/node</span><br><span class="line">If <span class="string">&quot;node --version&quot;</span> shows the old version <span class="keyword">then</span> start a new shell, or reset the location <span class="built_in">hash</span> with:</span><br><span class="line"><span class="built_in">hash</span> -r  (<span class="keyword">for</span> bash, zsh, ash, dash, and ksh)</span><br><span class="line"><span class="built_in">rehash</span>   (<span class="keyword">for</span> csh and tcsh)</span><br><span class="line">$ node -v</span><br><span class="line">v16.13.2</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="git"><a href="#git" class="headerlink" title="git"></a>git</h3><p>因为使用 <code>Github</code> 进行博客的托管和部署。要先进行 <code>git</code> 相关配置，以便能够访问 <code>Github</code> 中的仓库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># install git</span></span><br><span class="line">$ apt-get install git</span><br><span class="line"><span class="comment"># config username and email</span></span><br><span class="line">$ git config --global user.name <span class="string">&quot;John Doe&quot;</span></span><br><span class="line">$ git config --global user.email johndoe@example.com</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>然后配置 <code>ssh</code> 密钥来拉取 <code>Github</code> 仓库。按照<a href="https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account">Github官方教程</a>即可.</p>
+<h2 id="Init-Project"><a href="#Init-Project" class="headerlink" title="Init Project"></a>Init Project</h2><p>环境配置好后就可以进行工程的建立，首先在 <code>GitHub</code> 上建立一个名为 <code>username.github.io</code> 格式的仓库。因为我们要用 <code>GitHub</code> 支持的静态网站部署博客。更多关于 <a href="https://pages.github.com/">Github Pages</a></p>
+<p><img data-src="/posts/51a7104d/image_1.png"></p>
+<p>接着将这个仓库 <code>clone</code> 到本地，创建我们的 <code>hexo</code> 分支</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/username/username.github.io</span><br><span class="line">$ <span class="built_in">cd</span> username.github.io</span><br><span class="line">$ git checkout -b hext</span><br></pre></td></tr></table></figure>
+
+
+<p>这时候就可以用 <code>hexo</code> 来初始化 <code>hexo</code> 工程，参照<a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 首先安装hexo</span></span><br><span class="line">$ npm install -g hexo-cli</span><br><span class="line">$ hexo init</span><br><span class="line">$ ls</span><br><span class="line">_config.landscape.yml  _config.yml  node_modules  package.json  package-lock.json  scaffolds  <span class="built_in">source</span>  themes</span><br></pre></td></tr></table></figure>
+
+
+<p>这时我们的 <code>hexo</code> 的项目就创立成功了，这时只要运行 <code>hexo g &amp;&amp; hexo s</code> 就可以访问初始的 <code>hexo</code> 界面</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo g &amp;&amp; hexo s</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>访问<a href="http://localhost:4000/">http://localhost:4000</a></p>
+<p><img data-src="/posts/51a7104d/image_2.png"></p>
+<h3 id="next-theme"><a href="#next-theme" class="headerlink" title="next theme"></a>next theme</h3><p>接着进行主题配置，<code>hexo</code> 有很多主题可以到<a href="https://hexo.io/themes/">官网</a>查看。这里使用 <code>next</code> 主题。</p>
+<p>关于 <code>next</code> 主题主要有两个仓库。</p>
+<p><img data-src="/posts/51a7104d/image_3.png"></p>
+<p>第一个 <code>Star</code> 数量比较多，也是最开始 <code>next</code> 仓库，第二个仓库是国内大佬 <code>fork</code> 出来。主要原因在 <a href="https://github.com/next-theme/hexo-theme-next/issues/4">issues</a>中提到</p>
+<p><img data-src="/posts/51a7104d/image_4.png"></p>
+<p>这里选择支持国人的</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git submodule add https://github.com/theme-next/hexo-theme-next themes/next</span><br><span class="line"><span class="comment"># 如果之前使用的是git clone方法 直接添加submodule会保错</span></span><br><span class="line">$ git rm -f --cached themes/next</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>拉取完子模块后，修改 <code>_config.yaml</code> 找到 <code>theme</code> 修改为 <code>next</code>。再执行 <code>hexo g &amp;&amp; hexo s</code> 就可以看到主题已经切换为 <code>next</code>。</p>
+<p><img data-src="/posts/51a7104d/image_5.png"></p>
+<p>这里还要说一点关于 <code>hexo</code> 的配置文件，首先在根目录下有一个 <code>_config.yaml</code> 文件，这个文件是整个网站的配置，比如网站标题、描述等等。除此之外，我们都会使用 <code>hexo</code> 的主题，主题也会有一个配置文件，比如<code>next</code>的配置文件在 <code>themes/next/_config.yml</code> 中。</p>
+<p>但是如果我们直接修改 <code>themes/next/_config.yml</code>，由于是以子模块的方式组成的，就需要也提交这个文件显然是不允许的。其实 <code>hexo</code> 也想到这一点，可以看到在我们使用 <code>hexo</code> 创建出来的工程里会有一个文件叫 <code>_config.landscape.yml </code>。<code>landscape</code> 就是 <code>hexo</code> 的默认主题。那么同理我们只需要一个 <code>_config.next.yml</code> 就不需要修改 <code>next</code>工程中的配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cp themes/next/_config.yml _config.next.yml</span><br><span class="line"><span class="comment">#  这个文件对我们已经没有用了</span></span><br><span class="line">$ rm _config.landscape.yml</span><br></pre></td></tr></table></figure>
+
+
+<p>接着修改 <code>_config.next.yml</code> 里的主题使用 <code>Pisces</code> </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Schemes</span></span><br><span class="line"><span class="comment">#scheme: Muse</span></span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line">scheme: Pisces</span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
+
+
+<p>重新执行 <code>hexo g &amp;&amp; hexo s</code> 就可以看到主题已经切换。</p>
+<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>创建完博客后就可以部署到我们的 <code>Github</code> 上。首先我们先来了解一下 <code>hexo</code> 的部署方式。</p>
+<p>首先 <code>Hexo</code> 提供了快速方便的<a href="https://hexo.io/zh-cn/docs/one-command-deployment.html">一键部署</a>功能，只需一条命令就能将网站部署到服务器上。在执行前需要配置 <code>_config.yaml</code>。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  <span class="comment"># 注意这里一道要配置ssh的方式 如果使用https方式的话 后续无法通过Github Action部署</span></span><br><span class="line">  repo: git@github.com:usernmame/username.github.io.git</span><br><span class="line">  <span class="comment"># 指定部署到的分支</span></span><br><span class="line">  branch: [branch]</span><br><span class="line">  message: [message]</span><br></pre></td></tr></table></figure>
+
+
+<p>接着只需要执行，就可以将我们的博客部署到 <code>GitHub</code> 上。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+
+<p>但这种方式有一个问题，如果部署完后访问我们的仓库会发现在 <code>master</code> 分支上其实只是 <code>hexo</code> 生成的静态文件，而我们的主题配置等等还是在本地存放。这样我们就只能在当前这台电脑上进行写博客和发布，如果要同步又需要额外的同步手段。而我们使用 <code>hexo</code> 分支就是为了同步这些文件。</p>
+<h3 id="Github-Action"><a href="#Github-Action" class="headerlink" title="Github Action"></a>Github Action</h3><p>我们使用 <code>hexo</code> 分支来同步配置以及数据，但是每次写完博客或者修改了某些配置，又需要重新执行 <code>hexo deploy</code> 同步到 <code>master</code> 分支上。这又要求了我们每个可能写博客的机器又需要装一套 <code>node</code> 环境。</p>
+<p>期望通过 <code>Github Action</code> 来完成 <code>depoly</code> 这件事情。实现当 <code>hexo</code> 分支有提交时，就自动 <code>deploy</code> 到 <code>master</code> 分支。这样写博客的机器就无须配置<code>node</code>之类的<code>hexo</code>环境。</p>
+<p>配置 <code>Action</code> 十分简单，在项目的根目录中新建 <code>.github/workflow/</code> 目录，然后在目录下创建 <code>hexo.yml</code>(命名随意只要是 <code>yaml</code> 类型文件就可以)。目录结构如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">username.github.io</span><br><span class="line">└── .github</span><br><span class="line">└──── workflows</span><br><span class="line">└────── deploy.yml</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>然后思考我们需要 <code>action</code> 的流程应该是这样：</p>
+<p><img data-src="/posts/51a7104d/image_6.png"></p>
+<ul>
+<li>拉取hexo分支的代码</li>
+<li>安装node 环境</li>
+<li>配置git（密钥、用户名..）</li>
+<li>安装hexo依赖</li>
+<li>运行hexo depoly</li>
+</ul>
+<p>其中最复杂的就是 <code>git</code> 的配置，如果要想往仓库中提交代码就需要对应的权限，而 <code>Github</code> 的权限一般使用 <code>SSH</code> 密钥，这里我们生成一对密钥专门用来部署博客。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen -f deploy-key</span><br></pre></td></tr></table></figure>
+
+
+<p>会生成 <code>deploy-key</code> 和 <code>deploy-key.pub</code> 两个文件，分别是私钥和公钥。接着需要将公钥 <code>deploy-key.pub</code> 作为 <code>Deploy keys</code> 添加到 <code>username.github.io</code> 项目中。</p>
+<p><code>Deploy keys</code> 就和我们往 <code>GitHub</code> 中添加 <code>ssh</code> 公钥一样，只不过这个 <code>Deploy keys</code> 是针对某个仓库的。</p>
+<p><img data-src="/posts/51a7104d/image_7.png"></p>
+<p>有了公钥我们还需要私钥才能推送到仓库中。接着将私钥以 <code>Secrets</code> 的方式添加到项目中</p>
+<div class="note info">
+            <p>注意这里我们添加的名称为 <code>DEPOLY_KEY</code></p>
+          </div>
+
+<p><img data-src="/posts/51a7104d/image_8.png"></p>
+<p>接下来就是 <code>deploy.yml</code> 中的内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">Deploy</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="comment"># 指定只当hexo分支有push时才执行</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">hexo</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">A</span> <span class="string">job</span> <span class="string">to</span> <span class="string">deploy</span> <span class="string">blog.</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="comment">#  拉取代码</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">submodules:</span> <span class="literal">true</span> <span class="comment"># Checkout private submodules(themes or something else).</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 初始化node环境</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 配置环境 主要是git相关</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Configuration</span> <span class="string">environment</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="comment"># 这里就是在项目setting里配置的DEPLOY_KEY</span></span><br><span class="line">          <span class="attr">DEPLOY_KEY:</span> <span class="string">$&#123;&#123;secrets.DEPLOY_KEY&#125;&#125;</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          mkdir -p ~/.ssh/</span></span><br><span class="line"><span class="string">          echo &quot;$DEPLOY_KEY&quot; &gt; ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          chmod 600 ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span></span><br><span class="line"><span class="string">          git config --global user.name &quot;feifeifeimoon&quot;</span></span><br><span class="line"><span class="string">          git config --global user.email &quot;wangyufeimoon@gmail.com&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="comment"># 安装hexo依赖</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          npm i -g hexo-cli</span></span><br><span class="line"><span class="string">          npm i</span></span><br><span class="line"><span class="string"></span>         </span><br><span class="line">      <span class="comment"># 部署hexo</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">hexo</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          hexo deploy</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+
+<p>配置完成后，每次我们提交到 <code>hexo</code> 分支都会自动部署到 <code>master</code> 分支更新</p>
+<p><img data-src="/posts/51a7104d/image_9.png"></p>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建Hexo+Next博客:(二)个性化配置</title>
+    <url>/posts/6e3623f6.html</url>
+    <content><![CDATA[<p>在之前的文章我们使用 <code>Hexo + Next</code> 创建了一个博客，并且使用 <code>Github Action</code> 实现了自动部署功能。但默认的 <code>Next</code> 主题还是有些简单，接着我们来给博客添加一些个性化配置。</p>
+<span id="more"></span>
+<h2 id="语言和时区"><a href="#语言和时区" class="headerlink" title="语言和时区"></a>语言和时区</h2><p>默认 <code>next</code> 会使用英文，修改为中文并选择时区为 <code>Asia/Shanghai</code>。修改 <code>_config.yml</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Site</span></span><br><span class="line"><span class="comment"># 标题</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Hexo</span></span><br><span class="line"><span class="comment"># 副标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># 描述</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># 关键字</span></span><br><span class="line"><span class="attr">keywords:</span> </span><br><span class="line"><span class="comment"># 作者</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">XXXX</span></span><br><span class="line"><span class="comment"># 语言</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="comment"># 时区</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="启用搜索功能"><a href="#启用搜索功能" class="headerlink" title="启用搜索功能"></a>启用搜索功能</h2><p>我认为一个博客肯定需要有搜索功能，当文章多了之后能够快速的根据关键字搜索。效果如下：</p>
+<p><img data-src="/posts/6e3623f6/image.png"></p>
+<p>搜索功能需要先安装 <code>hexo-generator-searchdb</code> 插件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-generator-searchdb</span> <span class="string">--save</span></span><br></pre></td></tr></table></figure>
+
+<p>然后首先在 <code>_config.yml</code> 文件最后添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># search</span></span><br><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">10000</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>还要在 <code>_config.next.yml</code> 中找到 <code>local_search</code> 配置，将 <code>enable</code> 改为 <code>true</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Local Search</span></span><br><span class="line"><span class="comment"># Dependencies: https://github.com/theme-next/hexo-generator-searchdb</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># If auto, trigger search by changing input.</span></span><br><span class="line">  <span class="comment"># If manual, trigger search by pressing enter key or search button.</span></span><br><span class="line">  <span class="attr">trigger:</span> <span class="string">auto</span></span><br><span class="line">  <span class="comment"># Show top n results per article, show all results by setting to -1</span></span><br><span class="line">  <span class="attr">top_n_per_article:</span> <span class="number">1</span></span><br><span class="line">  <span class="comment"># Unescape html strings to the readable one.</span></span><br><span class="line">  <span class="attr">unescape:</span> <span class="literal">false</span></span><br><span class="line">  <span class="comment"># Preload the search data when the page loads.</span></span><br><span class="line">  <span class="attr">preload:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="显示文章更新时间"><a href="#显示文章更新时间" class="headerlink" title="显示文章更新时间"></a>显示文章更新时间</h2><p>效果如下：</p>
+<p><img data-src="/posts/6e3623f6/image_1.png"></p>
+<p>当文章有更新时间这个属性时，<code>next</code> 默认就会显示。所以主要是如何给文章添加更新时间。先来了解一下 <code>scaffolds/post.md</code> 文件。当我们使用 <code>hexo new</code> 创建一篇新文章时就会以这个文件作为模板。在这个模板中添加 <code>update</code> 字段。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;</span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="attr">updated:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
+
+
+<p>然后在已有的文章中也添加这个字段，注意的就是在更新文章后需要手动修改这个字段的值。如果没有成功显示，在 <code>_config.next.yml</code> 中查看 <code>post_meta</code> 字段中的 <code>updated_at</code> 是否为 <code>true</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Post meta display settings</span></span><br><span class="line"><span class="attr">post_meta:</span></span><br><span class="line">  <span class="attr">item_text:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">created_at:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">updated_at:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">another_day:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="计算文章字数和阅读时间"><a href="#计算文章字数和阅读时间" class="headerlink" title="计算文章字数和阅读时间"></a>计算文章字数和阅读时间</h2><p>显示每篇文章包含多少字以及预计阅读时间，效果如下：</p>
+<p><img data-src="/posts/6e3623f6/image_2.png"></p>
+<p>首先需要安装  <code>hexo-word-counter</code>  插件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-word-counter</span> <span class="string">--save</span></span><br></pre></td></tr></table></figure>
+
+
+<p>修改 <code>_config.yml</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 计算阅读时间</span></span><br><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">symbols:</span> <span class="literal">true</span>    <span class="comment"># 开启字符计数</span></span><br><span class="line">  <span class="attr">time:</span> <span class="literal">true</span>    <span class="comment"># 显示阅读时间</span></span><br><span class="line">  <span class="attr">total_symbols:</span> <span class="literal">true</span>    <span class="comment"># 博客总字符数目</span></span><br><span class="line">  <span class="attr">total_time:</span> <span class="literal">true</span>    <span class="comment"># 博客总阅读时间</span></span><br><span class="line">  <span class="attr">exclude_codeblock:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">awl:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">wpm:</span> <span class="number">275</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><code>awl</code> – 平均字节长度（<code>Average Word Length</code>）。默认为<code>4</code><ul>
+<li><code>CN ≈ 2</code></li>
+<li><code>EN ≈ 5</code></li>
+<li><code>RU ≈ 6</code></li>
+</ul>
+</li>
+<li><code>wpm</code> – 每分钟阅读字数（<code>Words Per Minute</code>）。默认为<code>275</code><ul>
+<li><code>Slow ≈ 200</code></li>
+<li><code>Normal ≈ 275</code></li>
+<li><code>Fast ≈ 350</code></li>
+</ul>
+</li>
+</ul>
+<p><em>如果文章中大多中文，那么设置</em><code>*awl*</code><em>为</em><code>*2*</code><em>，</em><code>*wpm*</code><em>为</em><code>*300*</code><em>比较合适</em>。</p>
+<p>接着在 <code>_config.next.yml</code> 中找到 <code>symbols_count_time</code> 配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Post wordcount display settings</span></span><br><span class="line"><span class="comment"># Dependencies: https://github.com/theme-next/hexo-symbols-count-time</span></span><br><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">separated_meta:</span> <span class="literal">false</span>         <span class="comment"># 是否另起一行显示（即不和发表时间等同一行显示）</span></span><br><span class="line">  <span class="attr">item_text_post:</span> <span class="literal">true</span>          <span class="comment"># 首页文章统计数量前是否显示文字描述（本文字数、阅读时长）</span></span><br><span class="line">  <span class="attr">item_text_total:</span> <span class="literal">false</span>        <span class="comment"># 页面底部统计数量前是否显示文字描述（站点总字数、站点阅读时长）</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><p>代码块的主题配置，效果如下：</p>
+<p><img data-src="/posts/6e3623f6/image_3.png"></p>
+<p>修改 <code>_config.next.yml</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">codeblock:</span></span><br><span class="line">  <span class="comment"># Code Highlight theme</span></span><br><span class="line">  <span class="comment"># Available values: normal | night | night eighties | night blue | night bright | solarized | solarized dark | galactic</span></span><br><span class="line">  <span class="comment"># See: https://github.com/chriskempson/tomorrow-theme</span></span><br><span class="line">  <span class="attr">highlight_theme:</span> <span class="string">night</span></span><br><span class="line">  <span class="comment"># Add copy button on codeblock</span></span><br><span class="line">  <span class="attr">copy_button:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Show text copy result.</span></span><br><span class="line">    <span class="attr">show_result:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># Available values: default | flat | mac</span></span><br><span class="line">    <span class="attr">style:</span> <span class="string">mac</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="支持切换主题颜色"><a href="#支持切换主题颜色" class="headerlink" title="支持切换主题颜色"></a>支持切换主题颜色</h2><p>安装 <code>hexo-next-darkmode</code> 插件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-next-darkmode --save</span><br></pre></td></tr></table></figure>
+
+
+<p>在 <code>Next</code> 主题的 <code>_config.next.yml</code> 配置文件里添加以下内容</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Darkmode JS</span></span><br><span class="line"><span class="comment"># For more information: https://github.com/rqh656418510/hexo-next-darkmode, https://github.com/sandoche/Darkmode.js</span></span><br><span class="line"><span class="attr">darkmode_js:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">bottom:</span> <span class="string">&#x27;64px&#x27;</span> <span class="comment"># default: &#x27;32px&#x27;</span></span><br><span class="line">  <span class="attr">right:</span> <span class="string">&#x27;unset&#x27;</span> <span class="comment"># default: &#x27;32px&#x27;</span></span><br><span class="line">  <span class="attr">left:</span> <span class="string">&#x27;32px&#x27;</span> <span class="comment"># default: &#x27;unset&#x27;</span></span><br><span class="line">  <span class="attr">time:</span> <span class="string">&#x27;0.5s&#x27;</span> <span class="comment"># default: &#x27;0.3s&#x27;</span></span><br><span class="line">  <span class="attr">mixColor:</span> <span class="string">&#x27;transparent&#x27;</span> <span class="comment"># default: &#x27;#fff&#x27;</span></span><br><span class="line">  <span class="attr">backgroundColor:</span> <span class="string">&#x27;transparent&#x27;</span> <span class="comment"># default: &#x27;#fff&#x27;</span></span><br><span class="line">  <span class="attr">buttonColorDark:</span> <span class="string">&#x27;#100f2c&#x27;</span> <span class="comment"># default: &#x27;#100f2c&#x27;</span></span><br><span class="line">  <span class="attr">buttonColorLight:</span> <span class="string">&#x27;#fff&#x27;</span> <span class="comment"># default: &#x27;#fff&#x27;</span></span><br><span class="line">  <span class="attr">isActivated:</span> <span class="literal">false</span> <span class="comment"># default false</span></span><br><span class="line">  <span class="attr">saveInCookies:</span> <span class="literal">true</span> <span class="comment"># default: true</span></span><br><span class="line">  <span class="attr">label:</span> <span class="string">&#x27;🌓&#x27;</span> <span class="comment"># default: &#x27;&#x27;</span></span><br><span class="line">  <span class="attr">autoMatchOsTheme:</span> <span class="literal">true</span> <span class="comment"># default: true</span></span><br><span class="line">  <span class="attr">libUrl:</span> <span class="comment"># Set custom library cdn url for Darkmode.js</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>isActivated: true</code>：默认激活暗黑 / 夜间模式，请始终与 <code>saveInCookies: false</code>、<code>autoMatchOsTheme: false</code> 一起使用</li>
+</ul>
+<h2 id="右上角添加GitHub连接"><a href="#右上角添加GitHub连接" class="headerlink" title="右上角添加GitHub连接"></a>右上角添加GitHub连接</h2><p>效果如下：</p>
+<p><img data-src="/posts/6e3623f6/image_4.png"></p>
+<ul>
+<li>1.首先到  <a href="https://tholman.com/github-corners/">GitHub Corners</a>  或者  <a href="https://github.blog/2008-12-19-github-ribbons/">GitHub Ribbons</a>  选择自己喜欢的图标，然后<code>copy</code>相应的代码</li>
+<li>2.然后将刚才复制的代码粘贴到 <code>themes/next/layout/_layout.swig</code> 文件中 <code>&lt;div class=&quot;headband&quot;&gt;&lt;/div&gt;</code> 下面一行</li>
+<li>3.把代码中的 <code>href</code> 后面的值替换成你要跳转的地址，比如你的 <code>GitHub</code> 主页</li>
+</ul>
+<h2 id="访问人数和阅读统计"><a href="#访问人数和阅读统计" class="headerlink" title="访问人数和阅读统计"></a>访问人数和阅读统计</h2><p><img data-src="/posts/6e3623f6/image_5.png"></p>
+<p><img data-src="/posts/6e3623f6/image_6.png"></p>
+<p><code>NexT</code>主题已集成了不蒜子的访客人数和文章阅读统计功能，修改 <code>_config.next.yml</code>。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Show Views/Visitors of the website/page with busuanzi.</span></span><br><span class="line"><span class="comment"># Get more information on http://ibruce.info/2015/04/04/busuanzi</span></span><br><span class="line"><span class="attr">busuanzi_count:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># 总访问人数</span></span><br><span class="line">    <span class="attr">total_visitors:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">total_visitors_icon:</span> <span class="string">user</span></span><br><span class="line">    <span class="comment"># 总访问次数</span></span><br><span class="line">    <span class="attr">total_views:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">total_views_icon:</span> <span class="string">eye</span></span><br><span class="line">    <span class="comment"># 文章访问统计</span></span><br><span class="line">    <span class="attr">post_views:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">post_views_icon:</span> <span class="string">eye</span></span><br></pre></td></tr></table></figure>
+
+
+<p>注意：在本地运行时不蒜子显示的数据会是假的，部署后就正常了</p>
+<h2 id="添加-RSS-支持"><a href="#添加-RSS-支持" class="headerlink" title="添加 RSS 支持"></a>添加 RSS 支持</h2><p>首先需要安装  <code>hexo-generator-feed</code>  插件</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-generator-feed</span> <span class="string">--save</span></span><br></pre></td></tr></table></figure>
+
+<p>接着修改 <code>Hexo</code> 的 <code>_config.yaml</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">atom</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">atom.xml</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">20</span></span><br><span class="line">  <span class="attr">hub:</span></span><br><span class="line">  <span class="attr">content:</span></span><br><span class="line">  <span class="attr">content_limit:</span> <span class="number">140</span></span><br><span class="line">  <span class="attr">content_limit_delim:</span> <span class="string">&#x27; &#x27;</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">icon.png</span></span><br><span class="line">  <span class="attr">autodiscovery:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">template:</span></span><br></pre></td></tr></table></figure>
+
+<p><code>Next</code> 提供了两个地方进行RSS展示，修改<code>_config.next.yml</code>文件</p>
+<p>在菜单栏显示<br><img data-src="/posts/6e3623f6/image_7.png"></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Usage: `Key: /link/ || icon`</span></span><br><span class="line"><span class="comment"># Key is the name of menu item. If the translation for this item is available, the translated text will be loaded, otherwise the Key name will be used. Key is case-senstive.</span></span><br><span class="line"><span class="comment"># Value before `||` delimiter is the target link, value after `||` delimiter is the name of Font Awesome icon.</span></span><br><span class="line"><span class="comment"># External url should start with http:// or https://</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-home</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-user</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-tags</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-th</span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-archive</span></span><br><span class="line">  <span class="attr">RSS:</span> <span class="string">/atom.xml</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-rss</span></span><br></pre></td></tr></table></figure>
+
+<p>在文章底部显示<br><img data-src="/posts/6e3623f6/image_8.png"></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Subscribe through Telegram Channel, Twitter, etc.</span></span><br><span class="line"><span class="comment"># Usage: `Key: permalink || icon` (Font Awesome)</span></span><br><span class="line"><span class="attr">follow_me:</span></span><br><span class="line">  <span class="comment">#Twitter: https://twitter.com/username || fab fa-twitter</span></span><br><span class="line">  <span class="comment">#Telegram: https://t.me/channel_name || fab fa-telegram</span></span><br><span class="line">  <span class="comment">#WeChat: /images/wechat_channel.jpg || fab fa-weixin</span></span><br><span class="line">  <span class="comment"># RSS: /atom.xml || fa fa-rss</span></span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[译] 教程：泛型入门 (Go 官方教程)</title>
+    <url>/posts/e82052d2.html</url>
+    <content><![CDATA[<h2 id="译者序"><a href="#译者序" class="headerlink" title="译者序"></a>译者序</h2><p>本文翻译自 <strong>Golang</strong> 官方教程 <a href="https://go.dev/doc/tutorial/generics"><strong>Tutorial: Getting started with generics</strong></a>。主要是关于 <strong>Golang</strong> 泛型的简单教程。<br><strong>由于译者水平有限，本文不免存在遗漏或错误之处。如有疑问，请查阅原文。</strong><br>以下是译文。</p>
+<span id="more"></span>
+
+<hr>
+<p>本教程介绍 <strong>Go</strong> 中泛型的基础知识。通过泛型，你可以声明和使用编写为与调用代码提供的任何一组类型一起使用的函数或类型。<br>在本教程中，你将声明两个简单的非泛型函数，然后在单个泛型函数中实现相同的逻辑。<br>你将逐步完成以下部分：</p>
+<ol>
+<li>为您的代码创建一个文件夹📁。</li>
+<li>添加非泛型（<strong>non-generic</strong>）函数。</li>
+<li>添加一个泛型函数来处理多种类型。</li>
+<li>调用泛型函数时删除类型参数（<strong>type arguments</strong>）。</li>
+<li>声明类型约束（<strong>Declare a type constraint</strong>）。</li>
+</ol>
+<div class="note info">
+            <p>注意：有关其他教程，请参阅<a href="https://go.dev/doc/tutorial/">教程</a>。<br>注意：如果您愿意，可以使用<a href="https://go.dev/play/?v=gotip">“Go dev 分支”模式下的 Go Playground</a>来编辑和运行您的程序。</p>
+          </div>
+
+
+<h2 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h2><ul>
+<li><strong>Go 1.18</strong> 或更高版本的安装。有关安装说明，请参阅<a href="https://go.dev/doc/install">安装<strong>Go</strong></a>。</li>
+<li>编辑代码的工具。任何文本编辑器都可以正常工作。</li>
+<li>一个命令终端。<strong>Go</strong> 在 <strong>Linux</strong> 和 <strong>Mac</strong> 上的任何终端以及 <strong>Windows</strong> 中的 <strong>PowerShell</strong> 或 <strong>cmd</strong> 上都能很好地工作。</li>
+</ul>
+<h2 id="为你的代码创建一个文件夹📁"><a href="#为你的代码创建一个文件夹📁" class="headerlink" title="为你的代码创建一个文件夹📁"></a>为你的代码创建一个文件夹📁</h2><p>首先，为你要编写的代码创建一个文件夹。</p>
+<ol>
+<li><p>打开命令提示符并切换到你的主目录。</p>
+<ul>
+<li><p>Linux or Mac：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Windows：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">C:\&gt; <span class="built_in">cd</span> %HOMEPATH%</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>本教程的其余部分将显示 <code>$</code> 作为提示符。你使用的命令也可以在 <strong>Windows</strong> 上运行。</p>
+</li>
+<li><p>在命令提示符下，为你的代码创建一个名为 <strong>generics</strong> 的目录。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir generics</span><br><span class="line">$ <span class="built_in">cd</span> generics</span><br></pre></td></tr></table></figure></li>
+<li><p>创建一个模块来保存您的代码。<br>运行<code>go mod init</code>命令，为其提供新代码的模块路径。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ go mod init example/generics</span><br><span class="line">go: creating new go.mod: module example/generics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对于生产代码，你需要指定一个更符合您自己需求的模块路径。有关更多信息，请务必查看 <a href="https://go.dev/doc/modules/managing-dependencies">Managing dependencies</a>。</p>
+</blockquote>
+</li>
+</ol>
+<p>接下来，你将添加一些简单的代码来处理 <strong>map</strong>。</p>
+<h2 id="添加非泛型函数"><a href="#添加非泛型函数" class="headerlink" title="添加非泛型函数"></a>添加非泛型函数</h2><p>在这一步中，你将添加两个函数，每个函数将 <strong>map</strong> 中的值相加并返回总数。</p>
+<p>你需要声明两个函数而不是一个，因为你要处理两种不同类型的 <strong>map</strong> ：一种存储 <strong>int64</strong> 类型的值，另一种存储 <strong>float64</strong> 类型的值。</p>
+<h3 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>使用您的文本编辑器，在 <strong>generics</strong> 目录中创建一个名为 <code>main.go </code>的文件。你将在这个文件中编写你的 <strong>Go</strong> 代码。</p>
+</li>
+<li><p>进入 <code>main.go</code>，在文件顶部，写入以下包声明。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure>
+
+<p>一个独立程序（与库相反）始终位于 <code>main</code> 包中。</p>
+</li>
+<li><p>在包声明下方，写入以下两个函数声明。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SumInts adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumInts</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">int64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumFloats adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumFloats</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">float64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>声明两个函数来将 Map 中的的值相加并返回总数<ul>
+<li><code>SumInts</code> 针对 <strong>string → int64</strong> 类型的 <strong>map</strong></li>
+<li><code>SumFloats</code> 针对 <strong>string → floats</strong> 类型的 <strong>map</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 顶部的包声明下方，粘贴以下的 <code>main</code> 函数来初始化两个<strong>map</strong>，并且用作参数来调用在上一步中声明的函数。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Initialize a map for the integer values</span></span><br><span class="line">    ints := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>:  <span class="number">34</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">12</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize a map for the float values</span></span><br><span class="line">    floats := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>:  <span class="number">35.98</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">26.99</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Non-Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumInts(ints),</span><br><span class="line">        SumFloats(floats))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>初始化了一个 <strong>value</strong> 为 <strong>int64</strong> 类型的 <strong>map</strong> 和一个 <strong>value</strong> 为 <strong>float64</strong> 类型的 <strong>map</strong>，每个 <strong>map</strong> 中有两条数据</li>
+<li>调用你之前定义的两个函数来计算每个 <strong>map</strong> 的所有值的总和。</li>
+<li>打印结果</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 顶部附近，就在包声明的下方，导入您需要支持你刚刚编写的代码的包。 第一行代码应如下所示：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>保存 <code>main.go</code></p>
+</li>
+</ol>
+<h3 id="运行代码"><a href="#运行代码" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br></pre></td></tr></table></figure>
+
+
+<p>通过泛型，可以只编写一个函数来替代两个函数。接下来，你将编写一个泛型函数针对无论值是 <strong>integer</strong> 或者 <strong>float</strong> 类型的 <strong>map</strong> 。</p>
+<h2 id="添加一个泛型函数来处理多种类型。"><a href="#添加一个泛型函数来处理多种类型。" class="headerlink" title="添加一个泛型函数来处理多种类型。"></a>添加一个泛型函数来处理多种类型。</h2><p>在这个部分，你将添加一个泛型函数，这个函数可以接收包含 <strong>integer</strong> 或 <strong>float</strong> 的 <strong>map</strong>，从而有效地将刚刚编写的两个函数替换为一个函数。</p>
+<p>要支持任一类型的值，这个函数需要一种方法来声明它支持的类型。另一方面，在调用代码时也需要一种方法来指定它是使用 <strong>integer</strong> 类型的 <strong>map</strong> 还是 <strong>float</strong> 类型的 <strong>map</strong>。</p>
+<p>为了支持这一点，你编写的函数在其普通函数参数之外还声明类型参数（<em><strong>type parameters</strong></em>）。这些类型参数（<em><strong>type parameters</strong></em>）使这个函数成为泛型函数，使其能够处理不同类型的参数。你将使用类型参数（ <em><strong>type arguments</strong></em>）和普通函数参数来调用该函数。</p>
+<p>每个类型参数都有一个类型约束（<em><strong>type constraint</strong></em>），它充当类型参数的一种元类型。每个类型约束（<em><strong>type constraint</strong></em>）指定调用代码可用于相应类型参数的允许类型参数（<em><strong>type parameters</strong></em>）。</p>
+<p>虽然类型参数的约束通常表示一组类型，但在编译时，类型参数代表单一类型——调用代码作为类型参数提供的类型。如果类型参数的约束不允许类型参数的类型，则代码将无法编译。</p>
+<p>请记住，类型参数必须支持泛型代码对其执行的所有操作。例如，如果你的函数代码尝试对约束包括数字类型的类型参数执行<code>string</code>操作（例如索引），则代码将无法编译。</p>
+<p>在即将编写的代码中，你将使用允许整数或浮点类型的 <strong>constraint</strong>。</p>
+<h3 id="编写代码-1"><a href="#编写代码-1" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>在您之前添加的两个函数下方，粘贴以下泛型函数。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SumIntsOrFloats sums the values of map m. It supports both int64 and float64</span></span><br><span class="line"><span class="comment">// as types for map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumIntsOrFloats</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">int64</span> | <span class="title">float64</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>声明一个 <code>SumIntsOrFloats</code> 函数，该函数具有两个类型参数（type parameters ）（方括号内的[]），<strong>K</strong> 和 <strong>V，</strong>以及一个使用类型参数 **m **的 <strong>map[K]V</strong> 类型的参数。该函数返回一个类型为 <strong>V</strong> 的值。</li>
+<li>为 <strong>K</strong> 类型参数指定<strong>comparable</strong>的类型约束（<strong>constraint</strong>）。专门针对此类情况，在 <strong>Go</strong> 中预先声明了<strong>comparable</strong>的约束。它允许任何类型的值可以用作比较运算符 <code>==</code> 和 <code>!=</code> 的操作数。<strong>Go</strong> 要求<strong>map</strong>的<strong>key</strong>是<strong>comparable</strong>的。因此，必须将 <strong>K</strong> 声明为<strong>comparable</strong>，这样您就可以使用 <strong>K</strong> 作为<strong>map</strong>变量中的<strong>key</strong>。它还确保调用方的代码中<strong>map</strong>的<strong>key</strong>键使用允许的类型（<strong>comparable</strong>类型）。</li>
+<li><strong>V</strong> 类型参数指定一个约束是两种类型的联合：<code>int64 ｜float64</code>。使用 <code>|</code>符号指定两种类型的联合，这意味着这个约束（<strong>constraint</strong>）允许其中任何一种类型。编译器将允许任一类型作为调用代码中的参数。</li>
+<li>指定 <strong>m</strong> 参数的类型为 <code>map[K]V</code>，其中 <strong>K</strong> 和 <strong>V</strong> 是已为类型参数指定的类型</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 中，在您已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">    SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">int64</span>](ints),</span><br><span class="line">    SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">float64</span>](floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>调用刚刚声明的泛型函数，传递创建的两个 <strong>map</strong>。</li>
+<li>指定类型参数 - 方括号中的类型名称 - 以明确应该替换您正在调用的函数中的类型参数的类型。</li>
+<li>打印函数返回的总和。</li>
+</ul>
+</li>
+</ol>
+<h3 id="运行代码-1"><a href="#运行代码-1" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">go</span> run .</span><br><span class="line">Non-Generic Sums: <span class="number">46</span> and <span class="number">62.97</span></span><br><span class="line">Generic Sums: <span class="number">46</span> and <span class="number">62.97</span></span><br></pre></td></tr></table></figure>
+
+
+<p>为了运行代码，在每次调用中，编译器会将类型参数替换为该调用中指定的具体类型。</p>
+<p>在调用你编写的泛型函数时，你指定了类型参数，告诉编译器使用什么类型来代替函数的类型参数。正如你将在下一节中看到的，在许多情况下，您可以省略这些类型参数，因为编译器可以推断它们。</p>
+<h2 id="调用泛型函数时删除类型参数（type-arguments）"><a href="#调用泛型函数时删除类型参数（type-arguments）" class="headerlink" title="调用泛型函数时删除类型参数（type arguments）"></a>调用泛型函数时删除类型参数（<strong>type arguments</strong>）</h2><p>在本节中，你将添加泛型函数调用的修改版本，进行一些小改动以简化调用代码。你将删除在这种情况下不需要的类型参数。</p>
+<p>当 <strong>Go</strong> 编译器可以推断你要使用的类型时，你可以在调用代码中省略类型参数。编译器从函数参数的类型推断类型参数。</p>
+<p>请注意，这并不总是可能的。例如，如果你需要调用没有参数的泛型函数，则需要在函数调用中包含类型参数。</p>
+<h3 id="编写代码-2"><a href="#编写代码-2" class="headerlink" title="编写代码"></a>编写代码</h3><ul>
+<li><p>在 <code>main.go</code> 中，在已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;</span>,</span><br><span class="line">    SumIntsOrFloats(ints),</span><br><span class="line">    SumIntsOrFloats(floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+<li><p>调用泛型函数，省略类型参数。</p>
+</li>
+</ul>
+<h3 id="运行代码-2"><a href="#运行代码-2" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums, <span class="built_in">type</span> parameters inferred: 46 and 62.97</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来，你将通过将整数和浮点数的并集捕获到可以重用的类型约束中来进一步简化函数，例如从其他代码中。</p>
+<h2 id="声明类型约束（Declare-a-type-constraint）"><a href="#声明类型约束（Declare-a-type-constraint）" class="headerlink" title="声明类型约束（Declare a type constraint）"></a>声明类型约束（<strong>Declare a type constraint</strong>）</h2><p>在最后一部分中，你将把之前定义的约束（<em><strong>constraint</strong></em>）移动到它自己的 <code>interface</code>中，以便可以在多个地方重用它。<br>可以像声明<code>interface</code>一样声明类型约束 （<em><strong>type</strong></em> <em><strong>constraint</strong></em>）。约束允许任何实现这个<code>interface</code>的类型。例如，如果声明了具有三个方法的类型约束接口（<em><strong>type constraint interface</strong></em>），然后在泛型函数中将其与类型参数一起使用，则用于调用该函数的类型参数必须具有所有这些方法。<br>正如你将在本节中看到的那样，约束接口也可以引用特定类的型。</p>
+<h3 id="编写代码-3"><a href="#编写代码-3" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>在 <code>main</code> 上方，紧跟 <code>import</code> 语句之后，粘贴以下代码以声明类型约束。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Number <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="keyword">int64</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>声明 <code>Number</code> 接口类型以用作类型约束（<em><strong>type</strong></em> <em><strong>constraint</strong></em>）。</li>
+<li>在 <code>interface</code>内声明 <code>int64</code> 和 <code>float64</code> 的联合。<br>本质上，你将联合从函数声明移动到新的类型约束中。这样，当你想将类型参数约束为 <code>int64</code> 或 <code>float64</code> 时，你可以使用此 <code>Number</code> 类型约束而不是写出 <code>int64 | float64</code>。（译者加：意思是如果有同样参数的泛型函数可以直接重用这个 <code>interface</code> 不用再写一遍<code>int64 | float64</code> ）。</li>
+</ul>
+<ol start="2">
+<li><p>在已有的函数下方，粘贴以下通用 <code>SumNumbers</code> 函数。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SumNumbers sums the values of map m. It supports both integers</span></span><br><span class="line"><span class="comment">// and floats as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumNumbers</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">Number</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>声明一个与之前声明的泛型函数具有相同逻辑的泛型函数，但使用新的<code>inteface</code> 而不是联合作为类型约束。</li>
+</ul>
+<ol start="3">
+<li><p>在<code> main.go</code> 中，在已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums with Constraint: %v and %v\n&quot;</span>,</span><br><span class="line">    SumNumbers(ints),</span><br><span class="line">    SumNumbers(floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>使用每个<strong>Map</strong>调用 <code>SumNumbers</code>，打印每个 <strong>Map</strong> 中 <strong>Value</strong> 的总和。<br>与上一节一样，在调用泛型函数时省略了类型参数（方括号中的类型名称）。 <strong>Go</strong> 编译器可以从其他参数推断类型参数。</li>
+</ul>
+<h3 id="运行代码-3"><a href="#运行代码-3" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums, <span class="built_in">type</span> parameters inferred: 46 and 62.97</span><br><span class="line">Generic Sums with Constraint: 46 and 62.97</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>做得很好！你刚刚向自己介绍了 <strong>Go</strong> 中的泛型。</p>
+<p>建议的下一个主题：</p>
+<ul>
+<li><a href="https://tour.golang.org/welcome/1"><strong>Go Tour</strong></a>是对 <strong>Go</strong> 基础知识的逐步介绍。</li>
+<li>你将在<a href="https://go.dev/doc/effective_go"><strong>Effective Go</strong></a>和<a href="https://go.dev/doc/code"><strong>How to write Go code</strong></a>中找到有用的 <strong>Go</strong> 最佳实践。</li>
+</ul>
+<h2 id="完整的代码"><a href="#完整的代码" class="headerlink" title="完整的代码"></a>完整的代码</h2><p>你可以在 <a href="https://go.dev/play/p/apNmfVwogK0?v=gotip">Go playground</a>上运行这个程序。只需单击“<strong>Run</strong>”按钮。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Number <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="keyword">int64</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Initialize a map for the integer values</span></span><br><span class="line">    ints := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>: <span class="number">34</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">12</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize a map for the float values</span></span><br><span class="line">    floats := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>: <span class="number">35.98</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">26.99</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Non-Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumInts(ints),</span><br><span class="line">        SumFloats(floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">int64</span>](ints),</span><br><span class="line">        SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">float64</span>](floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;</span>,</span><br><span class="line">        SumIntsOrFloats(ints),</span><br><span class="line">        SumIntsOrFloats(floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums with Constraint: %v and %v\n&quot;</span>,</span><br><span class="line">        SumNumbers(ints),</span><br><span class="line">        SumNumbers(floats))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumInts adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumInts</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">int64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumFloats adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumFloats</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">float64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumIntsOrFloats sums the values of map m. It supports both floats and integers</span></span><br><span class="line"><span class="comment">// as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumIntsOrFloats</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">int64</span> | <span class="title">float64</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumNumbers sums the values of map m. Its supports both integers</span></span><br><span class="line"><span class="comment">// and floats as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumNumbers</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">Number</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>Golang</tag>
+        <tag>泛型</tag>
+        <tag>translate</tag>
+      </tags>
+  </entry>
+</search>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/avicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <meta name="google-site-verification" content="gldjwsb_GZ7XO7jICeX1fciXoS8LMQ_Gi1W_GL3mbj4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"feifeifeimoon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="译者序本文翻译自 Golang 官方教程 Tutorial: Getting started with generics。主要是关于 Golang 泛型的简单教程。由于译者水平有限，本文不免存在遗漏或错误之处。如有疑问，请查阅原文。以下是译文。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译] 教程：泛型入门 (Go 官方教程)">
+<meta property="og:url" content="https://feifeifeimoon.github.io/posts/e82052d2.html">
+<meta property="og:site_name" content="飞飞飞">
+<meta property="og:description" content="译者序本文翻译自 Golang 官方教程 Tutorial: Getting started with generics。主要是关于 Golang 泛型的简单教程。由于译者水平有限，本文不免存在遗漏或错误之处。如有疑问，请查阅原文。以下是译文。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-12T14:15:16.000Z">
+<meta property="article:modified_time" content="2022-04-13T14:42:16.000Z">
+<meta property="article:author" content="Yufei Wang">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="泛型">
+<meta property="article:tag" content="translate">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://feifeifeimoon.github.io/posts/e82052d2.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[译] 教程：泛型入门 (Go 官方教程) | 飞飞飞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞飞飞" type="application/atom+xml">
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/feifeifeimoon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">飞飞飞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://feifeifeimoon.github.io/posts/e82052d2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/head.jpg">
+      <meta itemprop="name" content="Yufei Wang">
+      <meta itemprop="description" content="像风走了八百里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞飞飞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [译] 教程：泛型入门 (Go 官方教程)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-12 22:15:16" itemprop="dateCreated datePublished" datetime="2022-04-12T22:15:16+08:00">2022-04-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-13 22:42:16" itemprop="dateModified" datetime="2022-04-13T22:42:16+08:00">2022-04-13</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="译者序"><a href="#译者序" class="headerlink" title="译者序"></a>译者序</h2><p>本文翻译自 <strong>Golang</strong> 官方教程 <a target="_blank" rel="noopener" href="https://go.dev/doc/tutorial/generics"><strong>Tutorial: Getting started with generics</strong></a>。主要是关于 <strong>Golang</strong> 泛型的简单教程。<br><strong>由于译者水平有限，本文不免存在遗漏或错误之处。如有疑问，请查阅原文。</strong><br>以下是译文。</p>
+<span id="more"></span>
+
+<hr>
+<p>本教程介绍 <strong>Go</strong> 中泛型的基础知识。通过泛型，你可以声明和使用编写为与调用代码提供的任何一组类型一起使用的函数或类型。<br>在本教程中，你将声明两个简单的非泛型函数，然后在单个泛型函数中实现相同的逻辑。<br>你将逐步完成以下部分：</p>
+<ol>
+<li>为您的代码创建一个文件夹📁。</li>
+<li>添加非泛型（<strong>non-generic</strong>）函数。</li>
+<li>添加一个泛型函数来处理多种类型。</li>
+<li>调用泛型函数时删除类型参数（<strong>type arguments</strong>）。</li>
+<li>声明类型约束（<strong>Declare a type constraint</strong>）。</li>
+</ol>
+<div class="note info">
+            <p>注意：有关其他教程，请参阅<a target="_blank" rel="noopener" href="https://go.dev/doc/tutorial/">教程</a>。<br>注意：如果您愿意，可以使用<a target="_blank" rel="noopener" href="https://go.dev/play/?v=gotip">“Go dev 分支”模式下的 Go Playground</a>来编辑和运行您的程序。</p>
+          </div>
+
+
+<h2 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h2><ul>
+<li><strong>Go 1.18</strong> 或更高版本的安装。有关安装说明，请参阅<a target="_blank" rel="noopener" href="https://go.dev/doc/install">安装<strong>Go</strong></a>。</li>
+<li>编辑代码的工具。任何文本编辑器都可以正常工作。</li>
+<li>一个命令终端。<strong>Go</strong> 在 <strong>Linux</strong> 和 <strong>Mac</strong> 上的任何终端以及 <strong>Windows</strong> 中的 <strong>PowerShell</strong> 或 <strong>cmd</strong> 上都能很好地工作。</li>
+</ul>
+<h2 id="为你的代码创建一个文件夹📁"><a href="#为你的代码创建一个文件夹📁" class="headerlink" title="为你的代码创建一个文件夹📁"></a>为你的代码创建一个文件夹📁</h2><p>首先，为你要编写的代码创建一个文件夹。</p>
+<ol>
+<li><p>打开命令提示符并切换到你的主目录。</p>
+<ul>
+<li><p>Linux or Mac：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Windows：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt; <span class="built_in">cd</span> %HOMEPATH%</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>本教程的其余部分将显示 <code>$</code> 作为提示符。你使用的命令也可以在 <strong>Windows</strong> 上运行。</p>
+</li>
+<li><p>在命令提示符下，为你的代码创建一个名为 <strong>generics</strong> 的目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir generics</span><br><span class="line">$ <span class="built_in">cd</span> generics</span><br></pre></td></tr></table></figure></li>
+<li><p>创建一个模块来保存您的代码。<br>运行<code>go mod init</code>命令，为其提供新代码的模块路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ go mod init example/generics</span><br><span class="line">go: creating new go.mod: module example/generics</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对于生产代码，你需要指定一个更符合您自己需求的模块路径。有关更多信息，请务必查看 <a target="_blank" rel="noopener" href="https://go.dev/doc/modules/managing-dependencies">Managing dependencies</a>。</p>
+</blockquote>
+</li>
+</ol>
+<p>接下来，你将添加一些简单的代码来处理 <strong>map</strong>。</p>
+<h2 id="添加非泛型函数"><a href="#添加非泛型函数" class="headerlink" title="添加非泛型函数"></a>添加非泛型函数</h2><p>在这一步中，你将添加两个函数，每个函数将 <strong>map</strong> 中的值相加并返回总数。</p>
+<p>你需要声明两个函数而不是一个，因为你要处理两种不同类型的 <strong>map</strong> ：一种存储 <strong>int64</strong> 类型的值，另一种存储 <strong>float64</strong> 类型的值。</p>
+<h3 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>使用您的文本编辑器，在 <strong>generics</strong> 目录中创建一个名为 <code>main.go </code>的文件。你将在这个文件中编写你的 <strong>Go</strong> 代码。</p>
+</li>
+<li><p>进入 <code>main.go</code>，在文件顶部，写入以下包声明。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure>
+
+<p>一个独立程序（与库相反）始终位于 <code>main</code> 包中。</p>
+</li>
+<li><p>在包声明下方，写入以下两个函数声明。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SumInts adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumInts</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">int64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumFloats adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumFloats</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">float64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>声明两个函数来将 Map 中的的值相加并返回总数<ul>
+<li><code>SumInts</code> 针对 <strong>string → int64</strong> 类型的 <strong>map</strong></li>
+<li><code>SumFloats</code> 针对 <strong>string → floats</strong> 类型的 <strong>map</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 顶部的包声明下方，粘贴以下的 <code>main</code> 函数来初始化两个<strong>map</strong>，并且用作参数来调用在上一步中声明的函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Initialize a map for the integer values</span></span><br><span class="line">    ints := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>:  <span class="number">34</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">12</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize a map for the float values</span></span><br><span class="line">    floats := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>:  <span class="number">35.98</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">26.99</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Non-Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumInts(ints),</span><br><span class="line">        SumFloats(floats))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>初始化了一个 <strong>value</strong> 为 <strong>int64</strong> 类型的 <strong>map</strong> 和一个 <strong>value</strong> 为 <strong>float64</strong> 类型的 <strong>map</strong>，每个 <strong>map</strong> 中有两条数据</li>
+<li>调用你之前定义的两个函数来计算每个 <strong>map</strong> 的所有值的总和。</li>
+<li>打印结果</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 顶部附近，就在包声明的下方，导入您需要支持你刚刚编写的代码的包。 第一行代码应如下所示：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>保存 <code>main.go</code></p>
+</li>
+</ol>
+<h3 id="运行代码"><a href="#运行代码" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br></pre></td></tr></table></figure>
+
+
+<p>通过泛型，可以只编写一个函数来替代两个函数。接下来，你将编写一个泛型函数针对无论值是 <strong>integer</strong> 或者 <strong>float</strong> 类型的 <strong>map</strong> 。</p>
+<h2 id="添加一个泛型函数来处理多种类型。"><a href="#添加一个泛型函数来处理多种类型。" class="headerlink" title="添加一个泛型函数来处理多种类型。"></a>添加一个泛型函数来处理多种类型。</h2><p>在这个部分，你将添加一个泛型函数，这个函数可以接收包含 <strong>integer</strong> 或 <strong>float</strong> 的 <strong>map</strong>，从而有效地将刚刚编写的两个函数替换为一个函数。</p>
+<p>要支持任一类型的值，这个函数需要一种方法来声明它支持的类型。另一方面，在调用代码时也需要一种方法来指定它是使用 <strong>integer</strong> 类型的 <strong>map</strong> 还是 <strong>float</strong> 类型的 <strong>map</strong>。</p>
+<p>为了支持这一点，你编写的函数在其普通函数参数之外还声明类型参数（<em><strong>type parameters</strong></em>）。这些类型参数（<em><strong>type parameters</strong></em>）使这个函数成为泛型函数，使其能够处理不同类型的参数。你将使用类型参数（ <em><strong>type arguments</strong></em>）和普通函数参数来调用该函数。</p>
+<p>每个类型参数都有一个类型约束（<em><strong>type constraint</strong></em>），它充当类型参数的一种元类型。每个类型约束（<em><strong>type constraint</strong></em>）指定调用代码可用于相应类型参数的允许类型参数（<em><strong>type parameters</strong></em>）。</p>
+<p>虽然类型参数的约束通常表示一组类型，但在编译时，类型参数代表单一类型——调用代码作为类型参数提供的类型。如果类型参数的约束不允许类型参数的类型，则代码将无法编译。</p>
+<p>请记住，类型参数必须支持泛型代码对其执行的所有操作。例如，如果你的函数代码尝试对约束包括数字类型的类型参数执行<code>string</code>操作（例如索引），则代码将无法编译。</p>
+<p>在即将编写的代码中，你将使用允许整数或浮点类型的 <strong>constraint</strong>。</p>
+<h3 id="编写代码-1"><a href="#编写代码-1" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>在您之前添加的两个函数下方，粘贴以下泛型函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SumIntsOrFloats sums the values of map m. It supports both int64 and float64</span></span><br><span class="line"><span class="comment">// as types for map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumIntsOrFloats</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">int64</span> | <span class="title">float64</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>声明一个 <code>SumIntsOrFloats</code> 函数，该函数具有两个类型参数（type parameters ）（方括号内的[]），<strong>K</strong> 和 <strong>V，</strong>以及一个使用类型参数 **m **的 <strong>map[K]V</strong> 类型的参数。该函数返回一个类型为 <strong>V</strong> 的值。</li>
+<li>为 <strong>K</strong> 类型参数指定<strong>comparable</strong>的类型约束（<strong>constraint</strong>）。专门针对此类情况，在 <strong>Go</strong> 中预先声明了<strong>comparable</strong>的约束。它允许任何类型的值可以用作比较运算符 <code>==</code> 和 <code>!=</code> 的操作数。<strong>Go</strong> 要求<strong>map</strong>的<strong>key</strong>是<strong>comparable</strong>的。因此，必须将 <strong>K</strong> 声明为<strong>comparable</strong>，这样您就可以使用 <strong>K</strong> 作为<strong>map</strong>变量中的<strong>key</strong>。它还确保调用方的代码中<strong>map</strong>的<strong>key</strong>键使用允许的类型（<strong>comparable</strong>类型）。</li>
+<li><strong>V</strong> 类型参数指定一个约束是两种类型的联合：<code>int64 ｜float64</code>。使用 <code>|</code>符号指定两种类型的联合，这意味着这个约束（<strong>constraint</strong>）允许其中任何一种类型。编译器将允许任一类型作为调用代码中的参数。</li>
+<li>指定 <strong>m</strong> 参数的类型为 <code>map[K]V</code>，其中 <strong>K</strong> 和 <strong>V</strong> 是已为类型参数指定的类型</li>
+</ul>
+</li>
+<li><p>在 <code>main.go</code> 中，在您已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">    SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">int64</span>](ints),</span><br><span class="line">    SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">float64</span>](floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+<ul>
+<li>调用刚刚声明的泛型函数，传递创建的两个 <strong>map</strong>。</li>
+<li>指定类型参数 - 方括号中的类型名称 - 以明确应该替换您正在调用的函数中的类型参数的类型。</li>
+<li>打印函数返回的总和。</li>
+</ul>
+</li>
+</ol>
+<h3 id="运行代码-1"><a href="#运行代码-1" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> run .</span><br><span class="line">Non-Generic Sums: <span class="number">46</span> and <span class="number">62.97</span></span><br><span class="line">Generic Sums: <span class="number">46</span> and <span class="number">62.97</span></span><br></pre></td></tr></table></figure>
+
+
+<p>为了运行代码，在每次调用中，编译器会将类型参数替换为该调用中指定的具体类型。</p>
+<p>在调用你编写的泛型函数时，你指定了类型参数，告诉编译器使用什么类型来代替函数的类型参数。正如你将在下一节中看到的，在许多情况下，您可以省略这些类型参数，因为编译器可以推断它们。</p>
+<h2 id="调用泛型函数时删除类型参数（type-arguments）"><a href="#调用泛型函数时删除类型参数（type-arguments）" class="headerlink" title="调用泛型函数时删除类型参数（type arguments）"></a>调用泛型函数时删除类型参数（<strong>type arguments</strong>）</h2><p>在本节中，你将添加泛型函数调用的修改版本，进行一些小改动以简化调用代码。你将删除在这种情况下不需要的类型参数。</p>
+<p>当 <strong>Go</strong> 编译器可以推断你要使用的类型时，你可以在调用代码中省略类型参数。编译器从函数参数的类型推断类型参数。</p>
+<p>请注意，这并不总是可能的。例如，如果你需要调用没有参数的泛型函数，则需要在函数调用中包含类型参数。</p>
+<h3 id="编写代码-2"><a href="#编写代码-2" class="headerlink" title="编写代码"></a>编写代码</h3><ul>
+<li><p>在 <code>main.go</code> 中，在已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;</span>,</span><br><span class="line">    SumIntsOrFloats(ints),</span><br><span class="line">    SumIntsOrFloats(floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+<li><p>调用泛型函数，省略类型参数。</p>
+</li>
+</ul>
+<h3 id="运行代码-2"><a href="#运行代码-2" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums, <span class="built_in">type</span> parameters inferred: 46 and 62.97</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来，你将通过将整数和浮点数的并集捕获到可以重用的类型约束中来进一步简化函数，例如从其他代码中。</p>
+<h2 id="声明类型约束（Declare-a-type-constraint）"><a href="#声明类型约束（Declare-a-type-constraint）" class="headerlink" title="声明类型约束（Declare a type constraint）"></a>声明类型约束（<strong>Declare a type constraint</strong>）</h2><p>在最后一部分中，你将把之前定义的约束（<em><strong>constraint</strong></em>）移动到它自己的 <code>interface</code>中，以便可以在多个地方重用它。<br>可以像声明<code>interface</code>一样声明类型约束 （<em><strong>type</strong></em> <em><strong>constraint</strong></em>）。约束允许任何实现这个<code>interface</code>的类型。例如，如果声明了具有三个方法的类型约束接口（<em><strong>type constraint interface</strong></em>），然后在泛型函数中将其与类型参数一起使用，则用于调用该函数的类型参数必须具有所有这些方法。<br>正如你将在本节中看到的那样，约束接口也可以引用特定类的型。</p>
+<h3 id="编写代码-3"><a href="#编写代码-3" class="headerlink" title="编写代码"></a>编写代码</h3><ol>
+<li><p>在 <code>main</code> 上方，紧跟 <code>import</code> 语句之后，粘贴以下代码以声明类型约束。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Number <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="keyword">int64</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>声明 <code>Number</code> 接口类型以用作类型约束（<em><strong>type</strong></em> <em><strong>constraint</strong></em>）。</li>
+<li>在 <code>interface</code>内声明 <code>int64</code> 和 <code>float64</code> 的联合。<br>本质上，你将联合从函数声明移动到新的类型约束中。这样，当你想将类型参数约束为 <code>int64</code> 或 <code>float64</code> 时，你可以使用此 <code>Number</code> 类型约束而不是写出 <code>int64 | float64</code>。（译者加：意思是如果有同样参数的泛型函数可以直接重用这个 <code>interface</code> 不用再写一遍<code>int64 | float64</code> ）。</li>
+</ul>
+<ol start="2">
+<li><p>在已有的函数下方，粘贴以下通用 <code>SumNumbers</code> 函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SumNumbers sums the values of map m. It supports both integers</span></span><br><span class="line"><span class="comment">// and floats as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumNumbers</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">Number</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>声明一个与之前声明的泛型函数具有相同逻辑的泛型函数，但使用新的<code>inteface</code> 而不是联合作为类型约束。</li>
+</ul>
+<ol start="3">
+<li><p>在<code> main.go</code> 中，在已有的代码下方，粘贴以下代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(<span class="string">&quot;Generic Sums with Constraint: %v and %v\n&quot;</span>,</span><br><span class="line">    SumNumbers(ints),</span><br><span class="line">    SumNumbers(floats))</span><br></pre></td></tr></table></figure>
+
+<p>在代码中：</p>
+</li>
+</ol>
+<ul>
+<li>使用每个<strong>Map</strong>调用 <code>SumNumbers</code>，打印每个 <strong>Map</strong> 中 <strong>Value</strong> 的总和。<br>与上一节一样，在调用泛型函数时省略了类型参数（方括号中的类型名称）。 <strong>Go</strong> 编译器可以从其他参数推断类型参数。</li>
+</ul>
+<h3 id="运行代码-3"><a href="#运行代码-3" class="headerlink" title="运行代码"></a>运行代码</h3><p>在 <code>main.go</code> 的目录中的命令行中，运行代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ go run .</span><br><span class="line">Non-Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums: 46 and 62.97</span><br><span class="line">Generic Sums, <span class="built_in">type</span> parameters inferred: 46 and 62.97</span><br><span class="line">Generic Sums with Constraint: 46 and 62.97</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>做得很好！你刚刚向自己介绍了 <strong>Go</strong> 中的泛型。</p>
+<p>建议的下一个主题：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://tour.golang.org/welcome/1"><strong>Go Tour</strong></a>是对 <strong>Go</strong> 基础知识的逐步介绍。</li>
+<li>你将在<a target="_blank" rel="noopener" href="https://go.dev/doc/effective_go"><strong>Effective Go</strong></a>和<a target="_blank" rel="noopener" href="https://go.dev/doc/code"><strong>How to write Go code</strong></a>中找到有用的 <strong>Go</strong> 最佳实践。</li>
+</ul>
+<h2 id="完整的代码"><a href="#完整的代码" class="headerlink" title="完整的代码"></a>完整的代码</h2><p>你可以在 <a target="_blank" rel="noopener" href="https://go.dev/play/p/apNmfVwogK0?v=gotip">Go playground</a>上运行这个程序。只需单击“<strong>Run</strong>”按钮。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Number <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="keyword">int64</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Initialize a map for the integer values</span></span><br><span class="line">    ints := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>: <span class="number">34</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">12</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize a map for the float values</span></span><br><span class="line">    floats := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>&#123;</span><br><span class="line">        <span class="string">&quot;first&quot;</span>: <span class="number">35.98</span>,</span><br><span class="line">        <span class="string">&quot;second&quot;</span>: <span class="number">26.99</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Non-Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumInts(ints),</span><br><span class="line">        SumFloats(floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums: %v and %v\n&quot;</span>,</span><br><span class="line">        SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">int64</span>](ints),</span><br><span class="line">        SumIntsOrFloats[<span class="keyword">string</span>, <span class="keyword">float64</span>](floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;</span>,</span><br><span class="line">        SumIntsOrFloats(ints),</span><br><span class="line">        SumIntsOrFloats(floats))</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">&quot;Generic Sums with Constraint: %v and %v\n&quot;</span>,</span><br><span class="line">        SumNumbers(ints),</span><br><span class="line">        SumNumbers(floats))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumInts adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumInts</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int64</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">int64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumFloats adds together the values of m.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumFloats</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">float64</span>)</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s <span class="keyword">float64</span></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumIntsOrFloats sums the values of map m. It supports both floats and integers</span></span><br><span class="line"><span class="comment">// as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumIntsOrFloats</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">int64</span> | <span class="title">float64</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SumNumbers sums the values of map m. Its supports both integers</span></span><br><span class="line"><span class="comment">// and floats as map values.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SumNumbers</span>[<span class="title">K</span> <span class="title">comparable</span>, <span class="title">V</span> <span class="title">Number</span>]<span class="params">(m <span class="keyword">map</span>[K]V)</span> <span class="title">V</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> s V</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">        s += v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Yufei Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://feifeifeimoon.github.io/posts/e82052d2.html" title="[译] 教程：泛型入门 (Go 官方教程)">https://feifeifeimoon.github.io/posts/e82052d2.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/%E6%B3%9B%E5%9E%8B/" rel="tag"># 泛型</a>
+              <a href="/tags/translate/" rel="tag"># translate</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/5ba8a50c.html" rel="prev" title="在Mac上使用Multipass运行Ubuntu虚拟机">
+      <i class="fa fa-chevron-left"></i> 在Mac上使用Multipass运行Ubuntu虚拟机
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%91%E8%80%85%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">译者序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%86%B3%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">先决条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BD%A0%E7%9A%84%E4%BB%A3%E7%A0%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A4%B9%F0%9F%93%81"><span class="nav-number">3.</span> <span class="nav-text">为你的代码创建一个文件夹📁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%9D%9E%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">添加非泛型函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">运行代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0%E6%9D%A5%E5%A4%84%E7%90%86%E5%A4%9A%E7%A7%8D%E7%B1%BB%E5%9E%8B%E3%80%82"><span class="nav-number">5.</span> <span class="nav-text">添加一个泛型函数来处理多种类型。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81-1"><span class="nav-number">5.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81-1"><span class="nav-number">5.2.</span> <span class="nav-text">运行代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0%E6%97%B6%E5%88%A0%E9%99%A4%E7%B1%BB%E5%9E%8B%E5%8F%82%E6%95%B0%EF%BC%88type-arguments%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">调用泛型函数时删除类型参数（type arguments）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81-2"><span class="nav-number">6.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81-2"><span class="nav-number">6.2.</span> <span class="nav-text">运行代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E7%B1%BB%E5%9E%8B%E7%BA%A6%E6%9D%9F%EF%BC%88Declare-a-type-constraint%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">声明类型约束（Declare a type constraint）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81-3"><span class="nav-number">7.1.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81-3"><span class="nav-number">7.2.</span> <span class="nav-text">运行代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">8.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">9.</span> <span class="nav-text">完整的代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yufei Wang"
+      src="/head.jpg">
+  <p class="site-author-name" itemprop="name">Yufei Wang</p>
+  <div class="site-description" itemprop="description">像风走了八百里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/feifeifeimoon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;feifeifeimoon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wangyufeimoon@gmail.com" title="E-Mail → mailto:wangyufeimoon@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yufei Wang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">22k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">41 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ce169dfd28f9d337e4f2',
+      clientSecret: '20b98cf8e4f7fa67b9a7cee57ca8c603673a0d32',
+      repo        : 'feifeifeimoon.github.io',
+      owner       : 'feifeifeimoon',
+      admin       : ['feifeifeimoon'],
+      id          : '3974c0bfc8e337952b6c76b363bf0a42',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

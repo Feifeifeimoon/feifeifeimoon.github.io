@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/avicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <meta name="google-site-verification" content="gldjwsb_GZ7XO7jICeX1fciXoS8LMQ_Gi1W_GL3mbj4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"feifeifeimoon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这次重新折腾博客，主要有几个目标  添加多样性插件。比如支持评论 容易部署，如果切换电脑同步方便  最终选定了基于 Hexo➕Next 主题，托管在 Github 上，并且使用 Github Action 实现推送文章后自动部署。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建Hexo+Next博客:(一)集成Github-Action">
+<meta property="og:url" content="https://feifeifeimoon.github.io/posts/51a7104d.html">
+<meta property="og:site_name" content="飞飞飞">
+<meta property="og:description" content="这次重新折腾博客，主要有几个目标  添加多样性插件。比如支持评论 容易部署，如果切换电脑同步方便  最终选定了基于 Hexo➕Next 主题，托管在 Github 上，并且使用 Github Action 实现推送文章后自动部署。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_1.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_2.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_3.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_4.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_5.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_6.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_7.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_8.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image_9.png">
+<meta property="article:published_time" content="2022-01-11T16:11:16.000Z">
+<meta property="article:modified_time" content="2022-01-15T12:54:12.000Z">
+<meta property="article:author" content="Yufei Wang">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://feifeifeimoon.github.io/posts/51a7104d/image.png">
+
+<link rel="canonical" href="https://feifeifeimoon.github.io/posts/51a7104d.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>搭建Hexo+Next博客:(一)集成Github-Action | 飞飞飞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞飞飞" type="application/atom+xml">
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/feifeifeimoon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">飞飞飞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://feifeifeimoon.github.io/posts/51a7104d.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/head.jpg">
+      <meta itemprop="name" content="Yufei Wang">
+      <meta itemprop="description" content="像风走了八百里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞飞飞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建Hexo+Next博客:(一)集成Github-Action
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-12 00:11:16" itemprop="dateCreated datePublished" datetime="2022-01-12T00:11:16+08:00">2022-01-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-15 20:54:12" itemprop="dateModified" datetime="2022-01-15T20:54:12+08:00">2022-01-15</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这次重新折腾博客，主要有几个目标</p>
+<ul>
+<li>添加多样性插件。比如支持评论</li>
+<li>容易部署，如果切换电脑同步方便</li>
+</ul>
+<p>最终选定了基于 <code>Hexo➕Next</code> 主题，托管在 <code>Github</code> 上，并且使用 <code>Github Action</code> 实现推送文章后自动部署。</p>
+<span id="more"></span>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>创建一个 <code>hexo</code> 分支，用来存放 <code>hexo</code> 相关代码。也有些文章推荐创建一个 <code>private</code> 的仓库来存放 <code>hexo</code> 相关代码，也能通过 <code>Action</code> 实现自动部署到 <code>username.github.io</code> 仓库里。这里为了不创建多个仓库，使用一个仓库的两个不同分支来管理。</p>
+<p>基本流程如下，我们将文章或者博客的配置信息推送到 <code>Hexo</code> 分支然后触发 <code>Github Action</code> ，将 <code>Hexo</code> 分支生成的静态网页部署到 <code>Master</code> 分支，然后通过 <code>username.github.io </code> 访问。</p>
+<p><img data-src="/posts/51a7104d/image.png"></p>
+<h2 id="Environment"><a href="#Environment" class="headerlink" title="Environment"></a>Environment</h2><p>首先要进行环境配置，主要是 <code>node</code> 环境以及 <code>git</code> 配置。这里以 <code>mac</code> 环境为例其它环境类似只是安装工具不同。</p>
+<h3 id="nodejs"><a href="#nodejs" class="headerlink" title="nodejs"></a>nodejs</h3><p><code>Hexo</code> 基于 <a target="_blank" rel="noopener" href="https://nodejs.org/en/download/">Node.js</a>，要先安装 <code>node.js</code> 和 <code>npm</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用homebrew安装</span></span><br><span class="line">$ brew update</span><br><span class="line">$ brew install node</span><br><span class="line"><span class="comment"># 查看nodejs和npm版本</span></span><br><span class="line">$ node -v</span><br><span class="line">v17.3.0</span><br><span class="line">$ npm -v</span><br><span class="line">8.3.0</span><br></pre></td></tr></table></figure>
+
+<div class="note info">
+            <p>注意 <code>node</code> 版本需要在 12 以上，否则使用 <code>hexo</code> 时会报错，可以用以下方法升级 <code>node</code> 版本。</p>
+          </div>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g n</span><br><span class="line">$ n stable <span class="comment"># latest #(升级node.js到最新版) stable #（升级node.js到最新稳定版）</span></span><br><span class="line">  installing : node-v16.13.2</span><br><span class="line">       mkdir : /usr/<span class="built_in">local</span>/n/versions/node/16.13.2</span><br><span class="line">       fetch : https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-x64.tar.xz</span><br><span class="line">   installed : v16.13.2 (with npm 8.1.2)</span><br><span class="line"></span><br><span class="line">Note: the node <span class="built_in">command</span> changed location and the old location may be remembered <span class="keyword">in</span> your current shell.</span><br><span class="line">         old : /usr/bin/node</span><br><span class="line">         new : /usr/<span class="built_in">local</span>/bin/node</span><br><span class="line">If <span class="string">&quot;node --version&quot;</span> shows the old version <span class="keyword">then</span> start a new shell, or reset the location <span class="built_in">hash</span> with:</span><br><span class="line"><span class="built_in">hash</span> -r  (<span class="keyword">for</span> bash, zsh, ash, dash, and ksh)</span><br><span class="line"><span class="built_in">rehash</span>   (<span class="keyword">for</span> csh and tcsh)</span><br><span class="line">$ node -v</span><br><span class="line">v16.13.2</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="git"><a href="#git" class="headerlink" title="git"></a>git</h3><p>因为使用 <code>Github</code> 进行博客的托管和部署。要先进行 <code>git</code> 相关配置，以便能够访问 <code>Github</code> 中的仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install git</span></span><br><span class="line">$ apt-get install git</span><br><span class="line"><span class="comment"># config username and email</span></span><br><span class="line">$ git config --global user.name <span class="string">&quot;John Doe&quot;</span></span><br><span class="line">$ git config --global user.email johndoe@example.com</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>然后配置 <code>ssh</code> 密钥来拉取 <code>Github</code> 仓库。按照<a target="_blank" rel="noopener" href="https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account">Github官方教程</a>即可.</p>
+<h2 id="Init-Project"><a href="#Init-Project" class="headerlink" title="Init Project"></a>Init Project</h2><p>环境配置好后就可以进行工程的建立，首先在 <code>GitHub</code> 上建立一个名为 <code>username.github.io</code> 格式的仓库。因为我们要用 <code>GitHub</code> 支持的静态网站部署博客。更多关于 <a target="_blank" rel="noopener" href="https://pages.github.com/">Github Pages</a></p>
+<p><img data-src="/posts/51a7104d/image_1.png"></p>
+<p>接着将这个仓库 <code>clone</code> 到本地，创建我们的 <code>hexo</code> 分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/username/username.github.io</span><br><span class="line">$ <span class="built_in">cd</span> username.github.io</span><br><span class="line">$ git checkout -b hext</span><br></pre></td></tr></table></figure>
+
+
+<p>这时候就可以用 <code>hexo</code> 来初始化 <code>hexo</code> 工程，参照<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先安装hexo</span></span><br><span class="line">$ npm install -g hexo-cli</span><br><span class="line">$ hexo init</span><br><span class="line">$ ls</span><br><span class="line">_config.landscape.yml  _config.yml  node_modules  package.json  package-lock.json  scaffolds  <span class="built_in">source</span>  themes</span><br></pre></td></tr></table></figure>
+
+
+<p>这时我们的 <code>hexo</code> 的项目就创立成功了，这时只要运行 <code>hexo g &amp;&amp; hexo s</code> 就可以访问初始的 <code>hexo</code> 界面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g &amp;&amp; hexo s</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>访问<a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000</a></p>
+<p><img data-src="/posts/51a7104d/image_2.png"></p>
+<h3 id="next-theme"><a href="#next-theme" class="headerlink" title="next theme"></a>next theme</h3><p>接着进行主题配置，<code>hexo</code> 有很多主题可以到<a target="_blank" rel="noopener" href="https://hexo.io/themes/">官网</a>查看。这里使用 <code>next</code> 主题。</p>
+<p>关于 <code>next</code> 主题主要有两个仓库。</p>
+<p><img data-src="/posts/51a7104d/image_3.png"></p>
+<p>第一个 <code>Star</code> 数量比较多，也是最开始 <code>next</code> 仓库，第二个仓库是国内大佬 <code>fork</code> 出来。主要原因在 <a target="_blank" rel="noopener" href="https://github.com/next-theme/hexo-theme-next/issues/4">issues</a>中提到</p>
+<p><img data-src="/posts/51a7104d/image_4.png"></p>
+<p>这里选择支持国人的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule add https://github.com/theme-next/hexo-theme-next themes/next</span><br><span class="line"><span class="comment"># 如果之前使用的是git clone方法 直接添加submodule会保错</span></span><br><span class="line">$ git rm -f --cached themes/next</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>拉取完子模块后，修改 <code>_config.yaml</code> 找到 <code>theme</code> 修改为 <code>next</code>。再执行 <code>hexo g &amp;&amp; hexo s</code> 就可以看到主题已经切换为 <code>next</code>。</p>
+<p><img data-src="/posts/51a7104d/image_5.png"></p>
+<p>这里还要说一点关于 <code>hexo</code> 的配置文件，首先在根目录下有一个 <code>_config.yaml</code> 文件，这个文件是整个网站的配置，比如网站标题、描述等等。除此之外，我们都会使用 <code>hexo</code> 的主题，主题也会有一个配置文件，比如<code>next</code>的配置文件在 <code>themes/next/_config.yml</code> 中。</p>
+<p>但是如果我们直接修改 <code>themes/next/_config.yml</code>，由于是以子模块的方式组成的，就需要也提交这个文件显然是不允许的。其实 <code>hexo</code> 也想到这一点，可以看到在我们使用 <code>hexo</code> 创建出来的工程里会有一个文件叫 <code>_config.landscape.yml </code>。<code>landscape</code> 就是 <code>hexo</code> 的默认主题。那么同理我们只需要一个 <code>_config.next.yml</code> 就不需要修改 <code>next</code>工程中的配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cp themes/next/_config.yml _config.next.yml</span><br><span class="line"><span class="comment">#  这个文件对我们已经没有用了</span></span><br><span class="line">$ rm _config.landscape.yml</span><br></pre></td></tr></table></figure>
+
+
+<p>接着修改 <code>_config.next.yml</code> 里的主题使用 <code>Pisces</code> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Schemes</span></span><br><span class="line"><span class="comment">#scheme: Muse</span></span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line">scheme: Pisces</span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
+
+
+<p>重新执行 <code>hexo g &amp;&amp; hexo s</code> 就可以看到主题已经切换。</p>
+<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>创建完博客后就可以部署到我们的 <code>Github</code> 上。首先我们先来了解一下 <code>hexo</code> 的部署方式。</p>
+<p>首先 <code>Hexo</code> 提供了快速方便的<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/one-command-deployment.html">一键部署</a>功能，只需一条命令就能将网站部署到服务器上。在执行前需要配置 <code>_config.yaml</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  <span class="comment"># 注意这里一道要配置ssh的方式 如果使用https方式的话 后续无法通过Github Action部署</span></span><br><span class="line">  repo: git@github.com:usernmame/username.github.io.git</span><br><span class="line">  <span class="comment"># 指定部署到的分支</span></span><br><span class="line">  branch: [branch]</span><br><span class="line">  message: [message]</span><br></pre></td></tr></table></figure>
+
+
+<p>接着只需要执行，就可以将我们的博客部署到 <code>GitHub</code> 上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+
+<p>但这种方式有一个问题，如果部署完后访问我们的仓库会发现在 <code>master</code> 分支上其实只是 <code>hexo</code> 生成的静态文件，而我们的主题配置等等还是在本地存放。这样我们就只能在当前这台电脑上进行写博客和发布，如果要同步又需要额外的同步手段。而我们使用 <code>hexo</code> 分支就是为了同步这些文件。</p>
+<h3 id="Github-Action"><a href="#Github-Action" class="headerlink" title="Github Action"></a>Github Action</h3><p>我们使用 <code>hexo</code> 分支来同步配置以及数据，但是每次写完博客或者修改了某些配置，又需要重新执行 <code>hexo deploy</code> 同步到 <code>master</code> 分支上。这又要求了我们每个可能写博客的机器又需要装一套 <code>node</code> 环境。</p>
+<p>期望通过 <code>Github Action</code> 来完成 <code>depoly</code> 这件事情。实现当 <code>hexo</code> 分支有提交时，就自动 <code>deploy</code> 到 <code>master</code> 分支。这样写博客的机器就无须配置<code>node</code>之类的<code>hexo</code>环境。</p>
+<p>配置 <code>Action</code> 十分简单，在项目的根目录中新建 <code>.github/workflow/</code> 目录，然后在目录下创建 <code>hexo.yml</code>(命名随意只要是 <code>yaml</code> 类型文件就可以)。目录结构如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">username.github.io</span><br><span class="line">└── .github</span><br><span class="line">└──── workflows</span><br><span class="line">└────── deploy.yml</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>然后思考我们需要 <code>action</code> 的流程应该是这样：</p>
+<p><img data-src="/posts/51a7104d/image_6.png"></p>
+<ul>
+<li>拉取hexo分支的代码</li>
+<li>安装node 环境</li>
+<li>配置git（密钥、用户名..）</li>
+<li>安装hexo依赖</li>
+<li>运行hexo depoly</li>
+</ul>
+<p>其中最复杂的就是 <code>git</code> 的配置，如果要想往仓库中提交代码就需要对应的权限，而 <code>Github</code> 的权限一般使用 <code>SSH</code> 密钥，这里我们生成一对密钥专门用来部署博客。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -f deploy-key</span><br></pre></td></tr></table></figure>
+
+
+<p>会生成 <code>deploy-key</code> 和 <code>deploy-key.pub</code> 两个文件，分别是私钥和公钥。接着需要将公钥 <code>deploy-key.pub</code> 作为 <code>Deploy keys</code> 添加到 <code>username.github.io</code> 项目中。</p>
+<p><code>Deploy keys</code> 就和我们往 <code>GitHub</code> 中添加 <code>ssh</code> 公钥一样，只不过这个 <code>Deploy keys</code> 是针对某个仓库的。</p>
+<p><img data-src="/posts/51a7104d/image_7.png"></p>
+<p>有了公钥我们还需要私钥才能推送到仓库中。接着将私钥以 <code>Secrets</code> 的方式添加到项目中</p>
+<div class="note info">
+            <p>注意这里我们添加的名称为 <code>DEPOLY_KEY</code></p>
+          </div>
+
+<p><img data-src="/posts/51a7104d/image_8.png"></p>
+<p>接下来就是 <code>deploy.yml</code> 中的内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Hexo</span> <span class="string">Deploy</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="comment"># 指定只当hexo分支有push时才执行</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">hexo</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">A</span> <span class="string">job</span> <span class="string">to</span> <span class="string">deploy</span> <span class="string">blog.</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="comment">#  拉取代码</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Checkout</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/checkout@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">submodules:</span> <span class="literal">true</span> <span class="comment"># Checkout private submodules(themes or something else).</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 初始化node环境</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Use</span> <span class="string">Node.js</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v1</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 配置环境 主要是git相关</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Configuration</span> <span class="string">environment</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">          <span class="comment"># 这里就是在项目setting里配置的DEPLOY_KEY</span></span><br><span class="line">          <span class="attr">DEPLOY_KEY:</span> <span class="string">$&#123;&#123;secrets.DEPLOY_KEY&#125;&#125;</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          mkdir -p ~/.ssh/</span></span><br><span class="line"><span class="string">          echo &quot;$DEPLOY_KEY&quot; &gt; ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          chmod 600 ~/.ssh/id_rsa</span></span><br><span class="line"><span class="string">          ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span></span><br><span class="line"><span class="string">          git config --global user.name &quot;feifeifeimoon&quot;</span></span><br><span class="line"><span class="string">          git config --global user.email &quot;wangyufeimoon@gmail.com&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">      <span class="comment"># 安装hexo依赖</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">dependencies</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          npm i -g hexo-cli</span></span><br><span class="line"><span class="string">          npm i</span></span><br><span class="line"><span class="string"></span>         </span><br><span class="line">      <span class="comment"># 部署hexo</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">hexo</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">          hexo deploy</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+
+<p>配置完成后，每次我们提交到 <code>hexo</code> 分支都会自动部署到 <code>master</code> 分支更新</p>
+<p><img data-src="/posts/51a7104d/image_9.png"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Yufei Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://feifeifeimoon.github.io/posts/51a7104d.html" title="搭建Hexo+Next博客:(一)集成Github-Action">https://feifeifeimoon.github.io/posts/51a7104d.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/posts/6e3623f6.html" rel="next" title="搭建Hexo+Next博客:(二)个性化配置">
+      搭建Hexo+Next博客:(二)个性化配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Environment"><span class="nav-number">2.</span> <span class="nav-text">Environment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nodejs"><span class="nav-number">2.1.</span> <span class="nav-text">nodejs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git"><span class="nav-number">2.2.</span> <span class="nav-text">git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Init-Project"><span class="nav-number">3.</span> <span class="nav-text">Init Project</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#next-theme"><span class="nav-number">3.1.</span> <span class="nav-text">next theme</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deploy"><span class="nav-number">4.</span> <span class="nav-text">Deploy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Github-Action"><span class="nav-number">4.1.</span> <span class="nav-text">Github Action</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yufei Wang"
+      src="/head.jpg">
+  <p class="site-author-name" itemprop="name">Yufei Wang</p>
+  <div class="site-description" itemprop="description">像风走了八百里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/feifeifeimoon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;feifeifeimoon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wangyufeimoon@gmail.com" title="E-Mail → mailto:wangyufeimoon@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yufei Wang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">22k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">41 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ce169dfd28f9d337e4f2',
+      clientSecret: '20b98cf8e4f7fa67b9a7cee57ca8c603673a0d32',
+      repo        : 'feifeifeimoon.github.io',
+      owner       : 'feifeifeimoon',
+      admin       : ['feifeifeimoon'],
+      id          : 'f4a548d2f1ac055a534bebd9c2c38264',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

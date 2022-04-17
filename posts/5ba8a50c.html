@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/avicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <meta name="google-site-verification" content="gldjwsb_GZ7XO7jICeX1fciXoS8LMQ_Gi1W_GL3mbj4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"feifeifeimoon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Multipass 是一个轻量虚拟机管理器，是由 Ubuntu 运营公司 Canonical 所推出的开源项目。目前支持 Linux、Windows、macOS。Multipass 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 Ubuntu 虚拟机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Mac上使用Multipass运行Ubuntu虚拟机">
+<meta property="og:url" content="https://feifeifeimoon.github.io/posts/5ba8a50c.html">
+<meta property="og:site_name" content="飞飞飞">
+<meta property="og:description" content="Multipass 是一个轻量虚拟机管理器，是由 Ubuntu 运营公司 Canonical 所推出的开源项目。目前支持 Linux、Windows、macOS。Multipass 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 Ubuntu 虚拟机">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/5ba8a50c/image.png">
+<meta property="og:image" content="https://feifeifeimoon.github.io/posts/5ba8a50c/image_1.png">
+<meta property="article:published_time" content="2022-01-16T07:47:37.000Z">
+<meta property="article:modified_time" content="2022-03-16T12:16:37.000Z">
+<meta property="article:author" content="Yufei Wang">
+<meta property="article:tag" content="tools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://feifeifeimoon.github.io/posts/5ba8a50c/image.png">
+
+<link rel="canonical" href="https://feifeifeimoon.github.io/posts/5ba8a50c.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在Mac上使用Multipass运行Ubuntu虚拟机 | 飞飞飞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞飞飞" type="application/atom+xml">
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/feifeifeimoon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">飞飞飞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-rss">
+
+    <a href="/atom.xml" rel="section"><i class="fa fa-rss fa-fw"></i>RSS</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://feifeifeimoon.github.io/posts/5ba8a50c.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/head.jpg">
+      <meta itemprop="name" content="Yufei Wang">
+      <meta itemprop="description" content="像风走了八百里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞飞飞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Mac上使用Multipass运行Ubuntu虚拟机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-16 15:47:37" itemprop="dateCreated datePublished" datetime="2022-01-16T15:47:37+08:00">2022-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-16 20:16:37" itemprop="dateModified" datetime="2022-03-16T20:16:37+08:00">2022-03-16</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a target="_blank" rel="noopener" href="https://multipass.run/"><strong>Multipass</strong></a> 是一个轻量虚拟机管理器，是由 <strong>Ubuntu</strong> 运营公司 <strong>Canonical</strong> 所推出的<a target="_blank" rel="noopener" href="https://github.com/canonical/multipass">开源项目</a>。目前支持 <strong>Linux</strong>、<strong>Windows</strong>、<strong>macOS</strong>。<strong>Multipass</strong> 提供了一个命令行工具，通过它可以在几分钟内启动并运行一个崭新的 <strong>Ubuntu</strong> 虚拟机</p>
+<span id="more"></span>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><p>在 <a target="_blank" rel="noopener" href="https://multipass.run/"><strong>Multipass</strong></a>官网下载安装包</p>
+<p><img data-src="/posts/5ba8a50c/image.png"></p>
+<h3 id="Homebrew-安装"><a href="#Homebrew-安装" class="headerlink" title="Homebrew 安装"></a>Homebrew 安装</h3><p>没有安装 <code>Homebrew</code>? <a target="_blank" rel="noopener" href="https://link.segmentfault.com/?enc=1L8at0RPojKOLDBF33vHSw==.qRVlnGJxmxiBPCV618xdCQ==">点击这里安装 Homebrew</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ brew install multipass</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想要更新multipass版本</span></span><br><span class="line">$ brew upgrade multipass</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Use"><a href="#Use" class="headerlink" title="Use"></a>Use</h2><p>首先先看一下 <strong>multipass</strong> 有哪些命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">$ multipass  -h</span><br><span class="line">Usage: multipass [options] &lt;<span class="built_in">command</span>&gt;</span><br><span class="line">Create, control and connect to Ubuntu instances.</span><br><span class="line"></span><br><span class="line">This is a <span class="built_in">command</span> line utility <span class="keyword">for</span> multipass, a</span><br><span class="line">service that manages Ubuntu instances.</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -h, --<span class="built_in">help</span>     Displays <span class="built_in">help</span> on commandline options.</span><br><span class="line">  --help-all     Displays <span class="built_in">help</span> including Qt specific options.</span><br><span class="line">  -v, --verbose  Increase logging verbosity. Repeat the <span class="string">&#x27;v&#x27;</span> <span class="keyword">in</span> the short option</span><br><span class="line">                 <span class="keyword">for</span> more detail. Maximum verbosity is obtained with 4 (or more)</span><br><span class="line">                 v<span class="string">&#x27;s, i.e. -vvvv.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Available commands:</span></span><br><span class="line"><span class="string">  alias     Create an alias</span></span><br><span class="line"><span class="string">  aliases   List available aliases</span></span><br><span class="line"><span class="string">  delete    Delete instances</span></span><br><span class="line"><span class="string">  exec      Run a command on an instance</span></span><br><span class="line"><span class="string">  find      Display available images to create instances from</span></span><br><span class="line"><span class="string">  get       Get a configuration setting</span></span><br><span class="line"><span class="string">  help      Display help about a command</span></span><br><span class="line"><span class="string">  info      Display information about instances</span></span><br><span class="line"><span class="string">  launch    Create and start an Ubuntu instance</span></span><br><span class="line"><span class="string">  list      List all available instances</span></span><br><span class="line"><span class="string">  mount     Mount a local directory in the instance</span></span><br><span class="line"><span class="string">  networks  List available network interfaces</span></span><br><span class="line"><span class="string">  purge     Purge all deleted instances permanently</span></span><br><span class="line"><span class="string">  recover   Recover deleted instances</span></span><br><span class="line"><span class="string">  restart   Restart instances</span></span><br><span class="line"><span class="string">  set       Set a configuration setting</span></span><br><span class="line"><span class="string">  shell     Open a shell on a running instance</span></span><br><span class="line"><span class="string">  start     Start instances</span></span><br><span class="line"><span class="string">  stop      Stop running instances</span></span><br><span class="line"><span class="string">  suspend   Suspend running instances</span></span><br><span class="line"><span class="string">  transfer  Transfer files between the host and instances</span></span><br><span class="line"><span class="string">  umount    Unmount a directory from an instance</span></span><br><span class="line"><span class="string">  unalias   Remove an alias</span></span><br><span class="line"><span class="string">  version   Show version details</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Launch"><a href="#Launch" class="headerlink" title="Launch"></a>Launch</h2><p>我们使用 <strong>multipass</strong> 来创建一个 <strong>Ubuntu</strong> 虚拟机。<strong>multipass</strong> 中也有镜像的概念，通过 <code>multipass find</code> 命令可以查看当前有哪些镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ multipass find</span><br><span class="line">Image                       Aliases           Version          Description</span><br><span class="line">18.04                       bionic            20220104         Ubuntu 18.04 LTS</span><br><span class="line">20.04                       focal,lts         20220111         Ubuntu 20.04 LTS</span><br><span class="line">21.04                       hirsute           20220113         Ubuntu 21.04</span><br><span class="line">21.10                       impish            20220111         Ubuntu 21.10</span><br><span class="line">anbox-cloud-appliance                         latest           Anbox Cloud Appliance</span><br><span class="line">minikube                                      latest           minikube is <span class="built_in">local</span> Kubernetes</span><br></pre></td></tr></table></figure>
+
+
+<p>使用 <code>multipass launch</code> 命令创建一个 <strong>Ubuntu20.04</strong> 的虚拟机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -n 虚拟机名称 -c CPU -m 内存 -d 磁盘大小  20.04 指定镜像</span></span><br><span class="line">$ multipass launch -n ubuntu -c 2 -m 4G -d 10G 20.04</span><br><span class="line">Launched: ubuntu</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="note info">
+            <p><code>launch</code> 时更多参数可以通过 <code>multipass launch -h</code> 查看</p>
+          </div>
+
+
+
+<h2 id="List-amp-amp-Info"><a href="#List-amp-amp-Info" class="headerlink" title="List &amp;&amp; Info"></a>List &amp;&amp; Info</h2><p>查看运行中的虚拟机列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ multipass list</span><br><span class="line">Name                    State             IPv4             Image</span><br><span class="line">ubuntu                  Running           192.168.64.4     Ubuntu 20.04 LTS</span><br></pre></td></tr></table></figure>
+
+
+<p>还可以通过 <code>multipass info</code> 查看虚拟机详细信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ multipass info ubuntu            </span><br><span class="line">Name:           ubuntu</span><br><span class="line">State:          Running</span><br><span class="line">IPv4:           192.168.64.4</span><br><span class="line">Release:        Ubuntu 20.04.3 LTS</span><br><span class="line">Image <span class="built_in">hash</span>:     e9cae16ff305 (Ubuntu 20.04 LTS)</span><br><span class="line">Load:           0.00 0.00 0.00</span><br><span class="line">Disk usage:     1.2G out of 4.7G</span><br><span class="line">Memory usage:   161.6M out of 3.8G</span><br><span class="line">Mounts:         --</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Exec-amp-amp-Shell"><a href="#Exec-amp-amp-Shell" class="headerlink" title="Exec &amp;&amp; Shell"></a>Exec &amp;&amp; Shell</h2><p>进入虚拟机执行命令，有两种方式可以进入虚拟机执行命令。</p>
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ multipass <span class="built_in">exec</span> ubuntu uname      </span><br><span class="line">Linux</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果要传递参数就需要用以下这种格式</span></span><br><span class="line">$ multipass <span class="built_in">exec</span> ubuntu -- uname -a</span><br><span class="line">Linux ubuntu 5.4.0-94-generic <span class="comment">#106-Ubuntu SMP Thu Jan 6 23:59:31 UTC 2022 aarch64 aarch64 aarch64 GNU/Linux</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><p>使用 <code>exec</code> 时每次都要添加 <code>multipass exec ubuntu</code> ，<code>multipass</code> 还支持直接进入虚拟机的 <code>shell</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$multipass</span> shell ubuntu     </span><br><span class="line">Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-94-generic aarch64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line"></span><br><span class="line">  System information as of Sun Jan 16 15:04:58 CST 2022</span><br><span class="line"></span><br><span class="line">  System load:             0.0</span><br><span class="line">  Usage of /:              26.6% of 4.68GB</span><br><span class="line">  Memory usage:            5%</span><br><span class="line">  Swap usage:              0%</span><br><span class="line">  Processes:               119</span><br><span class="line">  Users logged <span class="keyword">in</span>:         0</span><br><span class="line">  IPv4 address <span class="keyword">for</span> enp0s1: 192.168.64.4</span><br><span class="line">  IPv6 address <span class="keyword">for</span> enp0s1: fddf:1872:81b9:5408:5054:ff:fea7:7dc4</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">0 updates can be applied immediately.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Last login: Sun Jan 16 15:03:53 2022 from 192.168.64.1</span><br><span class="line">To run a <span class="built_in">command</span> as administrator (user <span class="string">&quot;root&quot;</span>), use <span class="string">&quot;sudo &lt;command&gt;&quot;</span>.</span><br><span class="line">See <span class="string">&quot;man sudo_root&quot;</span> <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">ubuntu@ubuntu:~$ uname </span><br><span class="line">Linux</span><br><span class="line">ubuntu@ubuntu:~$</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="mount-amp-amp-transfer"><a href="#mount-amp-amp-transfer" class="headerlink" title="mount &amp;&amp; transfer"></a>mount &amp;&amp; transfer</h2><p><strong>multipass</strong> 也提供了宿主机和虚拟机之间同步文件</p>
+<h3 id="mount"><a href="#mount" class="headerlink" title="mount"></a>mount</h3><p>顾名思义，<strong>mount</strong> 可以将宿主机和虚拟机中的目录或者文件进行挂载。<strong>mount</strong> 后无论在宿主机还是虚拟机内进行操作，两边看到的都是一样的。熟悉 <strong>docker</strong> 的会知道这和 <code>docker -v</code> 参数一样。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ multipass mount /var/ubuntu/<span class="built_in">test</span>  ubuntu:/<span class="built_in">test</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="transfer"><a href="#transfer" class="headerlink" title="transfer"></a>transfer</h3><p><strong>multipass</strong> 还提供了 <strong>transfer</strong> 命令，用来在宿主机和虚拟机直接传输文件，但使用 <strong>transfer</strong> 命令拷贝的文件，在拷贝完成后就不会同步，相当于宿主机和虚拟机对应两份文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt; test.txt</span><br><span class="line">$ multipass transfer ./test.txt ubuntu:/home/ubuntu/test.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h2><p>如果要删除一个虚拟机也很方便</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ multipass stop ubuntu</span><br><span class="line">$ multipass delete vm01</span><br><span class="line">$ multipass purge</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="cloud-init"><a href="#cloud-init" class="headerlink" title="cloud-init"></a>cloud-init</h2><p>在  <a target="_blank" rel="noopener" href="https://multipass.run/docs">multipass官方文档</a>中说到</p>
+<p><img data-src="/posts/5ba8a50c/image_1.png"></p>
+<p>意思是可以在创建虚拟机时通过 <code>—cloud-int</code> 指定 <code>cloud-init.yml</code> 文件。</p>
+<p>有什么用呢？比方说我们每个虚拟机都要配置 <code>ssh</code> 或者需要通过 <code>apt</code> 安装一些工具，就可以将这些操作都写到 <code>cloud-init.yml</code> 文件中，这样每次创建虚拟机时就会自动执行这些环境的配置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># run commands</span></span><br><span class="line"><span class="comment"># default: none</span></span><br><span class="line"><span class="comment"># runcmd contains a list of either lists or a string</span></span><br><span class="line"><span class="comment"># each item will be executed in order at rc.local like level with</span></span><br><span class="line"><span class="comment"># output to the console</span></span><br><span class="line"><span class="comment"># - runcmd only runs during the first boot</span></span><br><span class="line"><span class="comment"># - if the item is a list, the items will be properly executed as if</span></span><br><span class="line"><span class="comment">#   passed to execve(3) (with the first arg as the command).</span></span><br><span class="line"><span class="comment"># - if the item is a string, it will be simply written to the file and</span></span><br><span class="line"><span class="comment">#   will be interpreted by &#x27;sh&#x27;</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Note, that the list has to be proper yaml, so you have to quote</span></span><br><span class="line"><span class="comment"># any characters yaml would eat (&#x27;:&#x27; can be problematic)</span></span><br><span class="line">runcmd:</span><br><span class="line"> - [ ls, -l, / ]</span><br><span class="line"> - [ sh, -xc, <span class="string">&quot;echo <span class="subst">$(date)</span> &#x27;: hello world!&#x27;&quot;</span> ]</span><br><span class="line"> - [ sh, -c, <span class="built_in">echo</span> <span class="string">&quot;=========hello world&#x27;=========&quot;</span> ]</span><br><span class="line"> - ls -l /root</span><br><span class="line"> <span class="comment"># Note: Don&#x27;t write files to /tmp from cloud-init use /run/somedir instead.</span></span><br><span class="line"> <span class="comment"># Early boot environments can race systemd-tmpfiles-clean LP: #1707222.</span></span><br><span class="line"> - mkdir /run/mydir</span><br><span class="line"> - [ wget, <span class="string">&quot;http://slashdot.org&quot;</span>, -O, /run/mydir/index.html ]</span><br></pre></td></tr></table></figure>
+
+
+<p>更多关于<a target="_blank" rel="noopener" href="https://cloudinit.readthedocs.io/en/latest/">cloud-init.yml 文件的写法</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Yufei Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://feifeifeimoon.github.io/posts/5ba8a50c.html" title="在Mac上使用Multipass运行Ubuntu虚拟机">https://feifeifeimoon.github.io/posts/5ba8a50c.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tools/" rel="tag"># tools</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/6e3623f6.html" rel="prev" title="搭建Hexo+Next博客:(二)个性化配置">
+      <i class="fa fa-chevron-left"></i> 搭建Hexo+Next博客:(二)个性化配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/e82052d2.html" rel="next" title="[译] 教程：泛型入门 (Go 官方教程)">
+      [译] 教程：泛型入门 (Go 官方教程) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Install"><span class="nav-number">1.</span> <span class="nav-text">Install</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">下载安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Homebrew-%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">Homebrew 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Use"><span class="nav-number">2.</span> <span class="nav-text">Use</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Launch"><span class="nav-number">3.</span> <span class="nav-text">Launch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List-amp-amp-Info"><span class="nav-number">4.</span> <span class="nav-text">List &amp;&amp; Info</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exec-amp-amp-Shell"><span class="nav-number">5.</span> <span class="nav-text">Exec &amp;&amp; Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#exec"><span class="nav-number">5.1.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell"><span class="nav-number">5.2.</span> <span class="nav-text">shell</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mount-amp-amp-transfer"><span class="nav-number">6.</span> <span class="nav-text">mount &amp;&amp; transfer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mount"><span class="nav-number">6.1.</span> <span class="nav-text">mount</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transfer"><span class="nav-number">6.2.</span> <span class="nav-text">transfer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delete"><span class="nav-number">7.</span> <span class="nav-text">Delete</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cloud-init"><span class="nav-number">8.</span> <span class="nav-text">cloud-init</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yufei Wang"
+      src="/head.jpg">
+  <p class="site-author-name" itemprop="name">Yufei Wang</p>
+  <div class="site-description" itemprop="description">像风走了八百里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/feifeifeimoon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;feifeifeimoon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wangyufeimoon@gmail.com" title="E-Mail → mailto:wangyufeimoon@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yufei Wang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">22k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">41 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'ce169dfd28f9d337e4f2',
+      clientSecret: '20b98cf8e4f7fa67b9a7cee57ca8c603673a0d32',
+      repo        : 'feifeifeimoon.github.io',
+      owner       : 'feifeifeimoon',
+      admin       : ['feifeifeimoon'],
+      id          : '465ae0cf5c0dcc2a36bb769c7e5f2e14',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
