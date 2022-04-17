@@ -31,9 +31,6 @@ language: zh-CN
 timezone: 'Asia/Shanghai'
 ```
 
-
-
-
 ## 启用搜索功能
 
 我认为一个博客肯定需要有搜索功能，当文章多了之后能够快速的根据关键字搜索。效果如下：
@@ -45,7 +42,6 @@ timezone: 'Asia/Shanghai'
 ```YAML
 $ npm install hexo-generator-searchdb --save
 ```
-
 
 然后首先在 `_config.yml` 文件最后添加以下内容
 
@@ -93,7 +89,7 @@ local_search:
 ---
 title: {{ title }}
 date: {{ date }}
-update: {{ date }}
+updated: {{ date }}
 tags:
 ---
 
@@ -125,7 +121,7 @@ post_meta:
 首先需要安装  `hexo-word-counter`  插件
 
 ```YAML
-$ npm install hexo-word-counter
+$ npm install hexo-word-counter --save
 ```
 
 
@@ -204,7 +200,7 @@ $ npm install hexo-next-darkmode --save
 ```
 
 
-在 `Next` 主题的 `_config.yml` 配置文件里添加以下内容
+在 `Next` 主题的 `_config.next.yml` 配置文件里添加以下内容
 
 ```YAML
 # Darkmode JS
@@ -227,9 +223,7 @@ darkmode_js:
 
 ```
 
-
 - `isActivated: true`：默认激活暗黑 / 夜间模式，请始终与 `saveInCookies: false`、`autoMatchOsTheme: false` 一起使用
-
 
 
 ## 右上角添加GitHub连接
@@ -241,8 +235,6 @@ darkmode_js:
 - 1.首先到  [GitHub Corners](https://tholman.com/github-corners/)  或者  [GitHub Ribbons](https://github.blog/2008-12-19-github-ribbons/)  选择自己喜欢的图标，然后`copy`相应的代码
 - 2.然后将刚才复制的代码粘贴到 `themes/next/layout/_layout.swig` 文件中 `<div class="headband"></div>` 下面一行
 - 3.把代码中的 `href` 后面的值替换成你要跳转的地址，比如你的 `GitHub` 主页
-
-
 
 
 
@@ -273,3 +265,58 @@ busuanzi_count:
 
 注意：在本地运行时不蒜子显示的数据会是假的，部署后就正常了
 
+## 添加 RSS 支持
+
+首先需要安装  `hexo-generator-feed`  插件
+
+```YAML
+$ npm install hexo-generator-feed --save
+```
+
+接着修改 `Hexo` 的 `_config.yaml`
+
+```YAML
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: icon.png
+  autodiscovery: true
+  template:
+  ```
+
+`Next` 提供了两个地方进行RSS展示，修改`_config.next.yml`文件
+
+在菜单栏显示
+![](image_7.png)
+```yaml
+# Usage: `Key: /link/ || icon`
+# Key is the name of menu item. If the translation for this item is available, the translated text will be loaded, otherwise the Key name will be used. Key is case-senstive.
+# Value before `||` delimiter is the target link, value after `||` delimiter is the name of Font Awesome icon.
+# External url should start with http:// or https://
+menu:
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+  archives: /archives/ || fa fa-archive
+  RSS: /atom.xml || fa fa-rss
+```
+
+在文章底部显示
+![](image_8.png)
+```yaml
+# Subscribe through Telegram Channel, Twitter, etc.
+# Usage: `Key: permalink || icon` (Font Awesome)
+follow_me:
+  #Twitter: https://twitter.com/username || fab fa-twitter
+  #Telegram: https://t.me/channel_name || fab fa-telegram
+  #WeChat: /images/wechat_channel.jpg || fab fa-weixin
+  # RSS: /atom.xml || fa fa-rss
+```
